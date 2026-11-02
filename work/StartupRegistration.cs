@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -51,12 +51,12 @@ public static class StartupTask {
         if(value("t:RegistrationInfo/t:Description")!=Marker || value("t:Principals/t:Principal/t:UserId")!=sid ||
            value("t:Principals/t:Principal/t:LogonType")!="InteractiveToken" || value("t:Principals/t:Principal/t:RunLevel")!="HighestAvailable" ||
            value("t:Actions/t:Exec/t:Arguments")!="--startup" || d.SelectNodes("/t:Task/t:Actions/*",n).Count!=1)
-            throw new InvalidOperationException("동일한 이름의 예약 작업이 WinHomeDesk 설정과 다릅니다. 작업 스케줄러에서 확인하세요.");
+            throw new InvalidOperationException(L.T("동일한 이름의 예약 작업이 WinHomeDesk 설정과 다릅니다. 작업 스케줄러에서 확인하세요."));
         // Disabled registrations still count, so disabling the option can remove them.
         return Command(value("t:Actions/t:Exec/t:Command"),true);
     }
     public static void Apply(IStartupBackend backend,string mode,string executable,string sid) {
-        if(mode!="off" && mode!="normal" && mode!="admin")throw new ArgumentException("자동 시작 방식이 올바르지 않습니다.");
+        if(mode!="off" && mode!="normal" && mode!="admin")throw new ArgumentException(L.T("자동 시작 방식이 올바르지 않습니다."));
         string task=backend.ReadTask(),run=backend.ReadRun("WinHomeDesk"),legacy=backend.ReadRun("SurfaceDesk");
         if(task!=null)ReadCommand(task,sid);
         string nextTask=mode=="admin"?Xml(executable,sid):null;
@@ -70,7 +70,7 @@ public static class StartupTask {
             try{if(backend.ReadTask()!=task)backend.WriteTask(task);}catch(Exception ex){rollback=ex;}
             try{if(backend.ReadRun("WinHomeDesk")!=run)backend.WriteRun("WinHomeDesk",run);}catch(Exception ex){rollback=ex;}
             try{if(backend.ReadRun("SurfaceDesk")!=legacy)backend.WriteRun("SurfaceDesk",legacy);}catch(Exception ex){rollback=ex;}
-            if(rollback!=null)throw new InvalidOperationException("자동 시작 변경 및 복원이 실패했습니다. 작업 스케줄러와 시작 프로그램 설정을 확인하세요. "+rollback.Message,failure);
+            if(rollback!=null)throw new InvalidOperationException(L.T("자동 시작 변경 및 복원이 실패했습니다. 작업 스케줄러와 시작 프로그램 설정을 확인하세요. ")+rollback.Message,failure);
             throw;
         }
     }
@@ -117,15 +117,15 @@ public sealed class ManagedStartupRegistration : IAtomicStartupRegistration {
     public void Write(string command) {
         string exe=Application.ExecutablePath,sid=StartupTask.CurrentSid;
         bool elevated=StartupTask.IsTask(command);string mode=command==null?"off":elevated?"admin":"normal";
-        if(command!=null && command!=StartupTask.Command(exe,elevated))throw new InvalidOperationException("현재 실행 중인 WinHomeDesk 경로만 자동 시작에 등록할 수 있습니다.");
+        if(command!=null && command!=StartupTask.Command(exe,elevated))throw new InvalidOperationException(L.T("현재 실행 중인 WinHomeDesk 경로만 자동 시작에 등록할 수 있습니다."));
         using(var b=new WindowsStartupBackend(sid)) {
             string xml=b.ReadTask();
             if(xml!=null)StartupTask.ReadCommand(xml,sid);
             if((xml!=null || elevated) && !StartupTask.IsElevated) {
                 // Same executable, current SID and a fixed mode only; no scripts or imported task XML.
                 var start=new ProcessStartInfo(exe,"--configure-startup "+mode+" "+sid) {UseShellExecute=true,Verb="runas",WindowStyle=ProcessWindowStyle.Hidden};
-                try {using(var p=Process.Start(start)){if(p==null)throw new IOException("관리자 설정 도구를 실행하지 못했습니다.");p.WaitForExit();if(p.ExitCode!=0)throw new InvalidOperationException("관리자 자동 시작을 저장하지 못했습니다. 관리자 설정 도구에 표시된 원인을 확인하세요.");}}
-                catch(Win32Exception ex){if(ex.NativeErrorCode==1223)throw new InvalidOperationException("UAC 승인이 취소되어 기존 자동 시작 설정을 유지합니다.",ex);throw;}
+                try {using(var p=Process.Start(start)){if(p==null)throw new IOException(L.T("관리자 설정 도구를 실행하지 못했습니다."));p.WaitForExit();if(p.ExitCode!=0)throw new InvalidOperationException(L.T("관리자 자동 시작을 저장하지 못했습니다. 관리자 설정 도구에 표시된 원인을 확인하세요."));}}
+                catch(Win32Exception ex){if(ex.NativeErrorCode==1223)throw new InvalidOperationException(L.T("UAC 승인이 취소되어 기존 자동 시작 설정을 유지합니다."),ex);throw;}
                 return;
             }
             StartupTask.Apply(b,mode,exe,sid);
@@ -135,10 +135,10 @@ public sealed class ManagedStartupRegistration : IAtomicStartupRegistration {
         if(args.Length==0 || args[0]!="--configure-startup")return false;
         try {
             if(args.Length!=3 || args[2]!=StartupTask.CurrentSid || !StartupTask.IsElevated)
-                throw new InvalidOperationException("현재 로그인한 관리자 계정으로 UAC를 승인해야 합니다. 다른 관리자 계정의 암호로 등록할 수 없습니다.");
+                throw new InvalidOperationException(L.T("현재 로그인한 관리자 계정으로 UAC를 승인해야 합니다. 다른 관리자 계정의 암호로 등록할 수 없습니다."));
             using(var b=new WindowsStartupBackend(StartupTask.CurrentSid))StartupTask.Apply(b,args[1],Application.ExecutablePath,StartupTask.CurrentSid);
             Environment.ExitCode=0;
-        }catch(Exception ex){MessageBox.Show("자동 시작 설정 실패\n"+ex.Message,"WinHomeDesk",MessageBoxButtons.OK,MessageBoxIcon.Error);Environment.ExitCode=1;}
+        }catch(Exception ex){MessageBox.Show(L.T("자동 시작 설정 실패\n")+ex.Message,"WinHomeDesk",MessageBoxButtons.OK,MessageBoxIcon.Error);Environment.ExitCode=1;}
         return true;
     }
 }

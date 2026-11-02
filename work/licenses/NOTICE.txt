@@ -27,3 +27,5 @@ No RDPWrap code/executable or patched Windows remote desktop service is included
 0.2.8: integrated process-local RDCMan 3.22 IME startup hook, embedded in WinHomeDesk.exe. The custom hook is Apache-2.0. Original RDCMan binaries are not redistributed or modified. Server binaries identical to 0.2.7.
 
 0.2.9: opt-in highest-privilege interactive logon task, current-user UAC registration helper, transactional startup migration. Native server and IME module unchanged.
+
+0.3.0: Korean/English UI selection, embedded translation catalog and bilingual documentation. Native server and IME module unchanged.

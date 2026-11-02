@@ -1,5 +1,7 @@
 # 빌드와 테스트
 
+**한국어** | [English](BUILD.en.md)
+
 저장소 루트에서 명령을 실행합니다. Windows x64가 대상입니다.
 
 ## GUI만 빌드
@@ -7,8 +9,9 @@
 Windows의 .NET Framework 4.x C# 컴파일러와 Python 3가 필요합니다. 자체 제작 IME 모듈은 이미 포함되어 있습니다.
 
 ```powershell
-python work/build_gui029.py
+python work/build_gui030.py
 python work/test029.py
+python work/test030.py
 ```
 
 결과는 `work/WinHomeDesk.exe`입니다. 이 파일만으로 서버가 동작하지는 않으며 배포본의 engine 폴더 또는 직접 빌드한 엔진이 필요합니다. `test029.py`는 설정과 트레이·자동 시작 전환을 시험하며 실제 시작 등록을 바꾸지 않습니다. Task Scheduler COM을 사용할 수 없는 환경에서는 해당 검증이 SKIP됩니다.

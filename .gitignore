@@ -14,6 +14,8 @@
 /work/test-state/
 /work/*-tests-*/
 /work/startup029-test/
+/work/localization030-test/
+/work/l10n-keys.json
 /work/*.exe
 /work/*.dll
 /work/*.log

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,7 +13,7 @@ public static class AppCredentials {
   IntPtr algorithm=IntPtr.Zero;byte[] input=Encoding.Unicode.GetBytes(password),hash=new byte[16];
   try {
    if(BCryptOpenAlgorithmProvider(out algorithm,"MD4",null,0)<0 || BCryptHash(algorithm,IntPtr.Zero,0,input,input.Length,hash,hash.Length)<0)
-    throw new CryptographicException("NLA 인증 키를 만들 수 없습니다.");
+    throw new CryptographicException(L.T("NLA 인증 키를 만들 수 없습니다."));
    return BitConverter.ToString(hash).Replace("-","");
   } finally {Array.Clear(input,0,input.Length);Array.Clear(hash,0,hash.Length);if(algorithm!=IntPtr.Zero)BCryptCloseAlgorithmProvider(algorithm,0);}
  }

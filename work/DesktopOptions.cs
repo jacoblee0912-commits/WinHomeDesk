@@ -12,6 +12,7 @@ public sealed class DesktopOptions {
     public bool StartServerAtLogin=false, AudioEnabled=true;
     public bool RightAltHangul=true;
     public bool StartupElevated=false;
+    public string Language="ko";
     public string RdcManPath="";
     static readonly byte[] entropy=Encoding.UTF8.GetBytes("SurfaceDesk/preferences/v1");
     public void ProtectPassword(string password) {
@@ -25,6 +26,7 @@ public sealed class DesktopOptions {
         try{return Encoding.UTF8.GetString(bytes);}finally{Array.Clear(bytes,0,bytes.Length);}
     }
     public void Validate() {
+        if(Language!="ko" && Language!="en")throw new InvalidDataException("Invalid UI language.");
         if(RdcManPath==null || RdcManPath.Length>32767 || (RdcManPath.Length>0 && (!Path.IsPathRooted(RdcManPath) || RdcManPath.IndexOf('"')>=0)))
             throw new InvalidDataException("저장된 RDCMan 경로가 올바르지 않습니다.");
         if((EncoderMode!="auto" && EncoderMode!="cpu") || GraphicsMode<0 || GraphicsMode>3 || Version!=1 || Port<1024 || Port>65535 || Quality<0 || Quality>2 || FrameRate<0 || FrameRate>2 ||
@@ -74,9 +76,9 @@ public sealed class UserStartupRegistration : IStartupRegistration {
     }
     public static string Command(string executable) {
         if(String.IsNullOrWhiteSpace(executable) || !Path.IsPathRooted(executable) || executable.IndexOf('"')>=0)
-            throw new ArgumentException("프로그램 경로가 올바르지 않습니다.");
+            throw new ArgumentException(L.T("프로그램 경로가 올바르지 않습니다."));
         string result="\""+executable+"\" --startup";
-        if(result.Length>260)throw new ArgumentException("자동 시작에 사용할 경로가 너무 깁니다. 더 짧은 폴더로 옮겨주세요.");
+        if(result.Length>260)throw new ArgumentException(L.T("자동 시작에 사용할 경로가 너무 깁니다. 더 짧은 폴더로 옮겨주세요."));
         return result;
     }
 }

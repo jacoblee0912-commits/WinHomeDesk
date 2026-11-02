@@ -7,8 +7,10 @@ NLA uses per-process WINHOME_DESK_NT_HASH plus existing PBKDF2 app credentials. 
 RDCore test harness requires your separately licensed installed RDCMan 3.22 SDK assemblies under work/rdc322-bundle,
 PowerShell/.NET 10 and WindowsDesktop runtime (adjust installed version in rdcoreprobe027.ps1).
 The harness accepts the loopback test certificate only and must not be used for remote targets.
-Historical test scripts retain their original names; use build_gui029.py for the current GUI.
+Historical test scripts retain their original names; use build_gui030.py for the current GUI.
 
 0.2.8 adds RdcManClient.cs and embeds ime-fix/WinHomeDesk.ImeHook.dll. The included prebuilt custom hook is the user-confirmed 1.0 module; source and build scripts included. Rebuilding the hook requires PowerShell 7/.NET 10 and WindowsDesktop reference assemblies (adjust path in ime-fix/build.ps1). Main GUI still targets .NET Framework 4.x. Server sources/binaries unchanged from 0.2.7.
 
 0.2.9 adds StartupRegistration.cs; GUI requires Microsoft.CSharp.dll (.NET Framework built-in). Test with test029.py; no live Task Scheduler or registry changes are made by tests.
+
+0.3.0 embeds Translations.xml and includes Localization.cs. Run test029.py then test030.py. Language changes preserve engine processes and credentials.

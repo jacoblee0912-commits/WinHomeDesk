@@ -1,8 +1,14 @@
 # WinHomeDesk
 
-Windows 11 Home x64에서 현재 로그인한 데스크톱을 공유하는 FreeRDP 기반 독립 RDP 서버입니다. SurfaceDesk라는 이름으로 시작했으며 현재 버전은 **0.2.9**입니다.
+**한국어** | [English](README.en.md)
+
+Windows 11 Home x64에서 현재 로그인한 데스크톱을 공유하는 FreeRDP 기반 독립 RDP 서버입니다. SurfaceDesk라는 이름으로 시작했으며 현재 버전은 **0.3.0**입니다.
 
 > 개발 중인 실험 버전입니다. 로그인 전·잠금 화면·UAC 보안 화면·절전 상태 접속은 지원하지 않습니다. Windows 내장 RDP와 별도의 구현이며 독립 Windows 사용자 세션을 생성하지 않습니다.
+
+## 0.3.0: 한국어 / English 선택
+
+메인 화면 오른쪽 위 **Language**에서 표시 언어를 선택할 수 있습니다. 선택은 즉시 적용되고 다음 실행에도 유지됩니다. 서버를 재시작하지 않으며 암호·주소·사용자 그룹 이름은 그대로 보존합니다. 이미 남긴 로그와 엔진 진단 식별자는 다시 번역하지 않습니다.
 
 ## 주요 기능
 
@@ -33,8 +39,9 @@ RDPWrap이나 Windows 원격 데스크톱 서비스 패치를 사용하지 않�
 
 ## 문서
 
-- [최신 0.2.9 사용 안내](docs/사용안내-0.2.9.txt)
-- [설치·사용 설명서 PDF (0.2.8 기준)](docs/WinHomeDesk-0.2.8-설치-사용설명서.pdf) - 관리자 자동 실행은 위의 0.2.9 안내를 우선합니다.
+- [최신 한국어 사용 안내](docs/GUIDE.ko.md)
+- [English installation and usage guide](docs/GUIDE.en.md)
+- [설치·사용 설명서 PDF (0.2.8 기준)](docs/WinHomeDesk-0.2.8-설치-사용설명서.pdf) - 관리자 자동 실행은 위의 최신 안내를 우선합니다.
 - [빌드 및 테스트](docs/BUILD.md)
 - [개발 이력](CHANGELOG.md)
 - [설계와 현재 제약](docs/ARCHITECTURE.md)
@@ -47,7 +54,7 @@ RDPWrap이나 Windows 원격 데스크톱 서비스 패치를 사용하지 않�
 - `work/FreeRDP`: 수정된 FreeRDP 소스 전체
 - `work/licenses`: 의존성 라이선스와 출처
 
-과거 테스트·패키징 스크립트는 개발 기록으로 보존했습니다. 이전 빌드 폴더나 도구를 전제로 하는 스크립트가 있으므로 현재 빌드는 `work/Build.ps1` 또는 GUI 전용 `work/build_gui029.py`를 사용하세요. 과거 배포물을 재현한 Git 커밋 이력이 아니라 최신 소스 스냅샷과 개발 기록입니다.
+과거 테스트·패키징 스크립트는 개발 기록으로 보존했습니다. 이전 빌드 폴더나 도구를 전제로 하는 스크립트가 있으므로 현재 빌드는 `work/Build.ps1` 또는 GUI 전용 `work/build_gui030.py`를 사용하세요. 과거 배포물을 재현한 Git 커밋 이력이 아니라 최신 소스 스냅샷과 개발 기록입니다.
 
 ## 라이선스
 

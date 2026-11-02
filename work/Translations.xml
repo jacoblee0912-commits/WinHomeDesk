@@ -1,0 +1,1181 @@
+<?xml version='1.0' encoding='utf-8'?>
+<translations>
+  <text>
+    <ko>WinHomeDesk — 독립 RDP 서버 0.3.0 · 실험 버전</ko>
+    <en>WinHomeDesk - RDP server 0.3.0 · Experimental</en>
+  </text>
+  <text>
+    <ko>내 서피스 화면을 RDCMan으로 연결</ko>
+    <en>Share this desktop with RDCMan</en>
+  </text>
+  <text>
+    <ko> · 관리자 권한</ko>
+    <en> · Administrator</en>
+  </text>
+  <text>
+    <ko> · 일반 권한</ko>
+    <en> · Standard user</en>
+  </text>
+  <text>
+    <ko>RDCMan 실행 (한글 보정)</ko>
+    <en>RDCMan (Korean input fix)</en>
+  </text>
+  <text>
+    <ko>Windows Home x64용 프로토타입 · FreeRDP 기반 · RDPWrap 불필요</ko>
+    <en>Windows Home x64 · FreeRDP · No RDPWrap</en>
+  </text>
+  <text>
+    <ko>접속 사용자: surface     접속 암호 (이 프로그램 전용)</ko>
+    <en>User: surface     Password (for this app only)</en>
+  </text>
+  <text>
+    <ko>암호 보기</ko>
+    <en>Show password</en>
+  </text>
+  <text>
+    <ko>연결 주소</ko>
+    <en>Address</en>
+  </text>
+  <text>
+    <ko>포트</ko>
+    <en>Port</en>
+  </text>
+  <text>
+    <ko>현재 화면 공유를 시작합니다. 주변 사람도 화면을 볼 수 있습니다.</ko>
+    <en>Share my current screen. People at this PC can see the same screen.</en>
+  </text>
+  <text>
+    <ko>잠금·UAC 보안 화면·해상도 변경 시 중지됩니다. 로그인 전 접속은 지원하지 않습니다.
+창을 닫으면 트레이에서 계속 실행됩니다. 완전 종료는 트레이 메뉴에서 합니다.</ko>
+    <en>Stops on lock, UAC secure desktop or resolution change. No access before sign-in.
+Closing the window keeps the app in the tray. Use the tray menu to exit.</en>
+  </text>
+  <text>
+    <ko>서버 시작</ko>
+    <en>Start server</en>
+  </text>
+  <text>
+    <ko>서버 중지</ko>
+    <en>Stop server</en>
+  </text>
+  <text>
+    <ko>연결 파일 저장</ko>
+    <en>Save RDP file</en>
+  </text>
+  <text>
+    <ko>인증서 지문 확인</ko>
+    <en>Certificate fingerprint</en>
+  </text>
+  <text>
+    <ko>서버 인증서 SHA-1 지문:
+</ko>
+    <en>Server certificate SHA-1 fingerprint:
+</en>
+  </text>
+  <text>
+    <ko>
+
+RDCMan의 인증서 상세 정보와 비교하세요.</ko>
+    <en>
+
+Compare this with the certificate details in RDCMan.</en>
+  </text>
+  <text>
+    <ko>인증서 확인</ko>
+    <en>Certificate</en>
+  </text>
+  <text>
+    <ko>서버를 한 번 시작한 후 확인하세요.
+</ko>
+    <en>Start the server once before checking the certificate.
+</en>
+  </text>
+  <text>
+    <ko>상태 확인</ko>
+    <en>Check status</en>
+  </text>
+  <text>
+    <ko>외부 접속은 방화벽·같은 네트워크 여부도 확인해야 합니다.</ko>
+    <en>For remote access, also check the firewall and network route.</en>
+  </text>
+  <text>
+    <ko>접속 주소 복사</ko>
+    <en>Copy address</en>
+  </text>
+  <text>
+    <ko>복사한 주소를 원격 데스크톱의 컴퓨터 칸에 입력하세요: </ko>
+    <en>Paste this address into the Remote Desktop Computer field: </en>
+  </text>
+  <text>
+    <ko>로그 저장</ko>
+    <en>Save log</en>
+  </text>
+  <text>
+    <ko>진단 기록|*.txt</ko>
+    <en>Diagnostic log|*.txt</en>
+  </text>
+  <text>
+    <ko>RDCMan 그룹 관리</ko>
+    <en>RDCMan groups</en>
+  </text>
+  <text>
+    <ko>전송 화질</ko>
+    <en>Quality</en>
+  </text>
+  <text>
+    <ko>균형 — 긴 변 최대 1920px (기본)</ko>
+    <en>Balanced - up to 1920px (default)</en>
+  </text>
+  <text>
+    <ko>속도 우선 — 긴 변 최대 1440px</ko>
+    <en>Speed - up to 1440px</en>
+  </text>
+  <text>
+    <ko>원본 선명도 — 원본 해상도</ko>
+    <en>Native resolution</en>
+  </text>
+  <text>
+    <ko>목표 FPS</ko>
+    <en>Target FPS</en>
+  </text>
+  <text>
+    <ko>내부 IP 후보를 선택했습니다. 접속할 네트워크의 IP인지 확인하세요. 127.0.0.1은 같은 PC 전용입니다.</ko>
+    <en>A local IP candidate was selected. Check the intended network. 127.0.0.1 is for this PC only.</en>
+  </text>
+  <text>
+    <ko>RDCMan: Server name = 선택한 IP, Connection Settings의 포트 = 3390 (기본값)</ko>
+    <en>RDCMan: Server name = selected IP; Connection Settings port = 3390 by default.</en>
+  </text>
+  <text>
+    <ko>이 버전은 TLS 인증서를 자동 생성합니다. 첫 연결 시 인증서 지문을 확인하세요.</ko>
+    <en>A TLS certificate is generated automatically. Verify its fingerprint on first connection.</en>
+  </text>
+  <text>
+    <ko>화질·캡처 방식은 서버 중지 후 변경하세요. 전송 화면만 축소하며 서피스의 실제 해상도는 유지합니다.</ko>
+    <en>Stop the server before changing quality or capture mode. Scaling does not change the PC's display resolution.</en>
+  </text>
+  <text>
+    <ko>창의 X는 트레이로 숨김 / 완전 종료는 트레이 메뉴 / 자동 시작은 환경 설정에서 선택하세요.</ko>
+    <en>X hides to tray / Exit from tray / Configure sign-in startup in Settings.</en>
+  </text>
+  <text>
+    <ko>[오래된 로그 일부 생략]</ko>
+    <en>[Earlier log entries omitted]</en>
+  </text>
+  <text>
+    <ko>초 전 측정] </ko>
+    <en>s ago] </en>
+  </text>
+  <text>
+    <ko>초 전] </ko>
+    <en>s ago] </en>
+  </text>
+  <text>
+    <ko>사용 중: DirectX (DXGI)</ko>
+    <en>Active: DirectX (DXGI)</en>
+  </text>
+  <text>
+    <ko>사용 중: GDI</ko>
+    <en>Active: GDI</en>
+  </text>
+  <text>
+    <ko>실제 전송: 연결 종료</ko>
+    <en>Graphics: disconnected</en>
+  </text>
+  <text>
+    <ko>인코더: 연결 대기</ko>
+    <en>Encoder: waiting for connection</en>
+  </text>
+  <text>
+    <ko>소리 전송: 연결 종료 / 다음 접속 대기</ko>
+    <en>Audio: disconnected / waiting for reconnect</en>
+  </text>
+  <text>
+    <ko>소리 전송: 꺼짐</ko>
+    <en>Audio: off</en>
+  </text>
+  <text>
+    <ko>암호 미전달: 새 연결 파일을 사용하고, 다른 계정 사용에서 surface와 현재 앱 암호를 입력하세요.</ko>
+    <en>No password received: use a new RDP file and enter surface and the current app password.</en>
+  </text>
+  <text>
+    <ko>계정 오류: 사용자 이름은 surface, RDCMan의 Domain은 빈칸으로 설정하세요.</ko>
+    <en>Account error: use surface as the username and leave Domain blank in RDCMan.</en>
+  </text>
+  <text>
+    <ko>암호 확인 실패: Windows PIN 대신 현재 WinHomeDesk 창의 전용 암호를 사용하세요.</ko>
+    <en>Password check failed: use the current WinHomeDesk app password, not your Windows PIN.</en>
+  </text>
+  <text>
+    <ko>포트 수신 확인</ko>
+    <en>Listening</en>
+  </text>
+  <text>
+    <ko>서버 시작 중 / 포트 수신 미확인</ko>
+    <en>Starting / listener not confirmed</en>
+  </text>
+  <text>
+    <ko>서버 중지됨</ko>
+    <en>Server stopped</en>
+  </text>
+  <text>
+    <ko> — 같은 PC 전용</ko>
+    <en> - this PC only</en>
+  </text>
+  <text>
+    <ko> — 다른 PC에서 입력할 주소</ko>
+    <en> - address for the connecting PC</en>
+  </text>
+  <text>
+    <ko>상태 확인 실패: </ko>
+    <en>Status check failed: </en>
+  </text>
+  <text>
+    <ko>현재 화면 공유 확인란을 선택하세요.</ko>
+    <en>Select the screen-sharing consent checkbox.</en>
+  </text>
+  <text>
+    <ko>접속 암호는 12자 이상으로 설정하세요.</ko>
+    <en>Use a password with at least 12 characters.</en>
+  </text>
+  <text>
+    <ko>RDP 엔진이 없습니다. ZIP 전체를 압축 해제하세요.</ko>
+    <en>RDP engine missing. Extract the entire ZIP archive.</en>
+  </text>
+  <text>
+    <ko>실제 전송: 연결 대기</ko>
+    <en>Graphics: waiting for connection</en>
+  </text>
+  <text>
+    <ko>전송 방식: </ko>
+    <en>Graphics mode: </en>
+  </text>
+  <text>
+    <ko>. 실제 사용 인코더는 접속 후 표시됩니다. AVC444는 CPU를 사용합니다.</ko>
+    <en>. The active encoder is shown after connection. AVC444 uses the CPU.</en>
+  </text>
+  <text>
+    <ko>키보드: 오른쪽 Alt → </ko>
+    <en>Keyboard: right Alt -&gt; </en>
+  </text>
+  <text>
+    <ko>한영 전환</ko>
+    <en>Korean/English toggle</en>
+  </text>
+  <text>
+    <ko>원래 키보드 배치</ko>
+    <en>original keyboard layout</en>
+  </text>
+  <text>
+    <ko>RDP 엔진 종료. 잠금·화면 변경 또는 위 오류를 확인하세요.</ko>
+    <en>RDP engine exited. Check for a locked screen, display change or errors above.</en>
+  </text>
+  <text>
+    <ko>캡처 중지</ko>
+    <en>Capture stopped</en>
+  </text>
+  <text>
+    <ko>실제 전송: 서버 중지</ko>
+    <en>Graphics: server stopped</en>
+  </text>
+  <text>
+    <ko>인코더: 서버 중지</ko>
+    <en>Encoder: server stopped</en>
+  </text>
+  <text>
+    <ko>소리 전송: 중지</ko>
+    <en>Audio: stopped</en>
+  </text>
+  <text>
+    <ko>서버가 중지되었습니다. 트레이에서 창을 열어 로그를 확인하세요.</ko>
+    <en>The server stopped. Open the window from the tray and check the log.</en>
+  </text>
+  <text>
+    <ko>캡처 시작 중</ko>
+    <en>Starting capture</en>
+  </text>
+  <text>
+    <ko>소리 캡처 시작 중</ko>
+    <en>Starting audio capture</en>
+  </text>
+  <text>
+    <ko>인증: NLA + TLS 호환. RDCMan 3.22 새 엔진과 기존 엔진에서 surface / 현재 앱 전용 암호를 사용하세요.</ko>
+    <en>Authentication: NLA + TLS. Use surface and the current app password in RDCMan 3.22 or the legacy engine.</en>
+  </text>
+  <text>
+    <ko>시작 요청: </ko>
+    <en>Start requested: </en>
+  </text>
+  <text>
+    <ko>. LISTEN 로그로 실제 시작 여부를 확인하세요.</ko>
+    <en>. Check LISTENING in the log to confirm startup.</en>
+  </text>
+  <text>
+    <ko>전송 화질: </ko>
+    <en>Quality: </en>
+  </text>
+  <text>
+    <ko> / 목표 </ko>
+    <en> / target </en>
+  </text>
+  <text>
+    <ko>. 실제 속도는 화면 변화량과 네트워크에 따라 달라집니다.</ko>
+    <en>. Actual speed depends on screen changes and the network.</en>
+  </text>
+  <text>
+    <ko>서버 시작 실패: </ko>
+    <en>Server startup failed: </en>
+  </text>
+  <text>
+    <ko>현재 주소 127.0.0.1은 이 PC 전용입니다. 다른 PC로 옮겨 사용할 파일은 연결 주소에서 서피스의 내부 IP를 선택한 뒤 저장하세요.</ko>
+    <en>127.0.0.1 refers to this PC only. Select the server PC's network IP before saving a file for another PC.</en>
+  </text>
+  <text>
+    <ko>원격 데스크톱 연결|*.rdp</ko>
+    <en>Remote Desktop connection|*.rdp</en>
+  </text>
+  <text>
+    <ko>저장: </ko>
+    <en>Saved: </en>
+  </text>
+  <text>
+    <ko>환경 설정</ko>
+    <en>Settings</en>
+  </text>
+  <text>
+    <ko>캡처 방식</ko>
+    <en>Capture</en>
+  </text>
+  <text>
+    <ko>자동 — DirectX 우선 / 실패 시 GDI</ko>
+    <en>Auto - DirectX first / GDI fallback</en>
+  </text>
+  <text>
+    <ko>GDI — 기존 캡처 방식</ko>
+    <en>GDI - legacy capture</en>
+  </text>
+  <text>
+    <ko>캡처 대기</ko>
+    <en>Capture idle</en>
+  </text>
+  <text>
+    <ko>저장된 암호가 유효하지 않습니다.</ko>
+    <en>The saved password is invalid.</en>
+  </text>
+  <text>
+    <ko>설정 읽기 실패 — 자동 서버 시작 안 함: </ko>
+    <en>Cannot read settings; automatic server start disabled: </en>
+  </text>
+  <text>
+    <ko>WinHomeDesk — 서버 중지</ko>
+    <en>WinHomeDesk - server stopped</en>
+  </text>
+  <text>
+    <ko>창 열기</ko>
+    <en>Open window</en>
+  </text>
+  <text>
+    <ko>종료 (서버도 종료)</ko>
+    <en>Exit (also stops server)</en>
+  </text>
+  <text>
+    <ko>트레이에서 계속 실행됩니다. 완전히 종료하려면 트레이 메뉴의 '종료'를 누르세요.</ko>
+    <en>Running in the system tray. Use Exit in the tray menu to close the app completely.</en>
+  </text>
+  <text>
+    <ko>서버 실행 중</ko>
+    <en>Server running</en>
+  </text>
+  <text>
+    <ko>서버 시작 중</ko>
+    <en>Server starting</en>
+  </text>
+  <text>
+    <ko>먼저 현재 화면 공유 확인란을 선택하세요.</ko>
+    <en>Select the screen-sharing consent checkbox first.</en>
+  </text>
+  <text>
+    <ko>전용 암호를 12자 이상 입력하세요.</ko>
+    <en>Enter an app password with at least 12 characters.</en>
+  </text>
+  <text>
+    <ko>자동 서버 시작 보류: 저장한 IP가 없습니다. 창에서 연결 주소를 확인하세요.</ko>
+    <en>Automatic server start deferred: the saved IP is unavailable. Check the address in the main window.</en>
+  </text>
+  <text>
+    <ko>저장한 IP를 찾지 못해 서버를 시작하지 않았습니다. 트레이에서 창을 열어 확인하세요.</ko>
+    <en>The saved IP was not found, so the server was not started. Open the window from the tray.</en>
+  </text>
+  <text>
+    <ko>환경 설정을 열지 못했습니다.
+</ko>
+    <en>Cannot open Settings.
+</en>
+  </text>
+  <text>
+    <ko>WinHomeDesk — 환경 설정</ko>
+    <en>WinHomeDesk - Settings</en>
+  </text>
+  <text>
+    <ko>창의 X 버튼은 트레이로 숨깁니다. 완전 종료는 트레이 메뉴에서 합니다.</ko>
+    <en>X hides the window. Use the tray menu to exit completely.</en>
+  </text>
+  <text>
+    <ko>Windows 로그인 시 트레이에서 자동 실행</ko>
+    <en>Start in the tray when I sign in to Windows</en>
+  </text>
+  <text>
+    <ko>로그인 시 원격 서버도 시작 (현재 설정·암호 저장)</ko>
+    <en>Also start the server (save current settings and password)</en>
+  </text>
+  <text>
+    <ko>관리자 권한으로 자동 실행 (작업 스케줄러 / 저장 시 UAC 승인)</ko>
+    <en>Run as administrator at sign-in (Task Scheduler / UAC on save)</en>
+  </text>
+  <text>
+    <ko>서버 자동 시작을 선택하면 현재 창의 주소·화질·FPS·캡처 방식과
+전용 암호를 저장합니다. 암호는 현재 Windows 계정으로 암호화됩니다.
+관리자 자동 실행은 같은 관리자 계정의 다음 로그인부터 적용됩니다.
+현재 권한은 바뀌지 않습니다. 로그인 전 접속은 지원하지 않습니다.</ko>
+    <en>Automatic server start saves the current address, quality, FPS, capture mode
+and app password. The password is encrypted for this Windows account.
+Administrator startup applies at the next sign-in of this administrator account.
+It does not elevate this running app or enable access before sign-in.</en>
+  </text>
+  <text>
+    <ko>오른쪽 Alt를 한영키로 사용</ko>
+    <en>Use right Alt to toggle Korean/English input</en>
+  </text>
+  <text>
+    <ko>기본 켜짐 · 변경 후 서버를 다시 시작하세요.
+일반 오른쪽 Alt / AltGr가 필요하면 해제하세요.</ko>
+    <en>On by default. Restart the server after changing this option.
+Turn it off if you need regular right Alt / AltGr.</en>
+  </text>
+  <text>
+    <ko>접속용 RDCMan 3.22 · 한글 입력 보정 포함</ko>
+    <en>RDCMan 3.22 client · Korean input fix</en>
+  </text>
+  <text>
+    <ko>처음 실행할 때 RDCMan.exe를 선택하세요.</ko>
+    <en>Select RDCMan.exe the first time you launch it.</en>
+  </text>
+  <text>
+    <ko>경로 변경</ko>
+    <en>Change path</en>
+  </text>
+  <text>
+    <ko>한글 보정 로그 열기</ko>
+    <en>Open Korean input fix log</en>
+  </text>
+  <text>
+    <ko>설정 저장</ko>
+    <en>Save settings</en>
+  </text>
+  <text>
+    <ko>취소</ko>
+    <en>Cancel</en>
+  </text>
+  <text>
+    <ko>자동 시작 권한: </ko>
+    <en>Startup privilege: </en>
+  </text>
+  <text>
+    <ko>관리자 (다음 로그인부터)</ko>
+    <en>administrator (next sign-in)</en>
+  </text>
+  <text>
+    <ko>일반</ko>
+    <en>standard user</en>
+  </text>
+  <text>
+    <ko> / 현재 권한: </ko>
+    <en> / current privilege: </en>
+  </text>
+  <text>
+    <ko>관리자</ko>
+    <en>administrator</en>
+  </text>
+  <text>
+    <ko>환경 설정 저장: 로그인 자동 실행 </ko>
+    <en>Settings saved: start at sign-in </en>
+  </text>
+  <text>
+    <ko>켜짐</ko>
+    <en>on</en>
+  </text>
+  <text>
+    <ko>꺼짐</ko>
+    <en>off</en>
+  </text>
+  <text>
+    <ko>, 서버 자동 시작 </ko>
+    <en>, automatic server start </en>
+  </text>
+  <text>
+    <ko>오른쪽 Alt 한영 변환: </ko>
+    <en>Right Alt Korean toggle: </en>
+  </text>
+  <text>
+    <ko> — 서버 재시작 후 적용</ko>
+    <en> - applies after server restart</en>
+  </text>
+  <text>
+    <ko>설정을 저장하지 못했습니다.
+</ko>
+    <en>Cannot save settings.
+</en>
+  </text>
+  <text>
+    <ko>프로그램 경로가 올바르지 않습니다.</ko>
+    <en>The executable path is invalid.</en>
+  </text>
+  <text>
+    <ko>자동 시작에 사용할 경로가 너무 깁니다. 더 짧은 폴더로 옮겨주세요.</ko>
+    <en>The startup path is too long. Move the app to a shorter folder path.</en>
+  </text>
+  <text>
+    <ko>서피스를 한 대 이상 추가하세요.</ko>
+    <en>Add at least one PC.</en>
+  </text>
+  <text>
+    <ko>행: </ko>
+    <en> row: </en>
+  </text>
+  <text>
+    <ko>그룹·기기 이름·IP/호스트 이름을 모두 입력하세요.</ko>
+    <en>Enter the group, device name and IP/hostname.</en>
+  </text>
+  <text>
+    <ko>이름이나 주소가 너무 깁니다.</ko>
+    <en>The name or address is too long.</en>
+  </text>
+  <text>
+    <ko>계정 이름이 너무 깁니다.</ko>
+    <en>The account name is too long.</en>
+  </text>
+  <text>
+    <ko>IPv4 주소를 사용하세요.</ko>
+    <en>Use an IPv4 address.</en>
+  </text>
+  <text>
+    <ko>접속할 수 있는 기기의 주소를 입력하세요.</ko>
+    <en>Enter a reachable device address.</en>
+  </text>
+  <text>
+    <ko>주소에 http:// 또는 :포트를 붙이지 마세요. 포트는 별도 칸에 입력합니다.</ko>
+    <en>Do not add http:// or :port to the address. Enter the port separately.</en>
+  </text>
+  <text>
+    <ko>IPv4 주소가 올바르지 않습니다.</ko>
+    <en>The IPv4 address is invalid.</en>
+  </text>
+  <text>
+    <ko>포트는 1~65535 범위로 입력하세요.</ko>
+    <en>The port must be between 1 and 65535.</en>
+  </text>
+  <text>
+    <ko>같은 주소와 포트가 이미 목록에 있습니다.</ko>
+    <en>This address and port are already in the list.</en>
+  </text>
+  <text>
+    <ko>같은 그룹 안의 기기 이름은 다르게 지정하세요.</ko>
+    <en>Use unique device names within each group.</en>
+  </text>
+  <text>
+    <ko>WinHomeDesk: 각 서피스에서 서버를 시작하고, RDCMan 서버 속성 &gt; Logon Credentials에 현재 앱 전용 암호를 입력하세요.</ko>
+    <en>WinHomeDesk: start the server on each PC and enter its current app password in RDCMan server properties &gt; Logon Credentials.</en>
+  </text>
+  <text>
+    <ko>접속 암호는 RDCMan에서 입력하세요. WinHomeDesk 접속 시 해당 앱의 전용 암호를 사용합니다. / 포트 </ko>
+    <en>Enter the password in RDCMan. For WinHomeDesk, use the app password. / Port </en>
+  </text>
+  <text>
+    <ko>RDCMan .rdg 파일이 아닙니다.</ko>
+    <en>This is not an RDCMan .rdg file.</en>
+  </text>
+  <text>
+    <ko>서피스</ko>
+    <en>Surfaces</en>
+  </text>
+  <text>
+    <ko>파일의 포트 값이 올바르지 않습니다.</ko>
+    <en>The port value in the file is invalid.</en>
+  </text>
+  <text>
+    <ko>RDP 파일이 너무 큽니다 (최대 1MB).</ko>
+    <en>The RDP file is too large (maximum 1 MB).</en>
+  </text>
+  <text>
+    <ko>파일 인코딩을 읽을 수 없습니다. UTF-8 또는 BOM이 있는 UTF-16으로 저장하세요.</ko>
+    <en>Cannot read the file encoding. Save as UTF-8 or UTF-16 with a BOM.</en>
+  </text>
+  <text>
+    <ko>full address 접속 주소가 없습니다.</ko>
+    <en>The full address field is missing.</en>
+  </text>
+  <text>
+    <ko>server port 값이 올바르지 않습니다.</ko>
+    <en>The server port value is invalid.</en>
+  </text>
+  <text>
+    <ko>현재 IPv4 또는 호스트 이름만 가져올 수 있습니다.</ko>
+    <en>Only IPv4 addresses and hostnames can be imported.</en>
+  </text>
+  <text>
+    <ko>주소 뒤의 포트가 올바르지 않습니다.</ko>
+    <en>The port after the address is invalid.</en>
+  </text>
+  <text>
+    <ko>추가할 그룹 이름을 1~128자로 입력하세요.</ko>
+    <en>Enter a group name with 1 to 128 characters.</en>
+  </text>
+  <text>
+    <ko>WinHomeDesk — RDCMan 그룹 파일 만들기</ko>
+    <en>WinHomeDesk - RDCMan group file</en>
+  </text>
+  <text>
+    <ko>여러 서피스를 그룹별로 등록하고 .rdg 파일로 저장하세요.</ko>
+    <en>Organize PCs into groups and save an .rdg file.</en>
+  </text>
+  <text>
+    <ko>목록 이름</ko>
+    <en>List name</en>
+  </text>
+  <text>
+    <ko>내 서피스</ko>
+    <en>My Surfaces</en>
+  </text>
+  <text>
+    <ko>RDP 추가 그룹</ko>
+    <en>Import group</en>
+  </text>
+  <text>
+    <ko>그룹</ko>
+    <en>Group</en>
+  </text>
+  <text>
+    <ko>기기 이름</ko>
+    <en>Device name</en>
+  </text>
+  <text>
+    <ko>IP / 호스트 이름</ko>
+    <en>IP / hostname</en>
+  </text>
+  <text>
+    <ko>사용자 이름</ko>
+    <en>Username</en>
+  </text>
+  <text>
+    <ko>이 PC 추가</ko>
+    <en>Add this PC</en>
+  </text>
+  <text>
+    <ko>선택 행 삭제</ko>
+    <en>Delete rows</en>
+  </text>
+  <text>
+    <ko>RDG 불러오기</ko>
+    <en>Load RDG</en>
+  </text>
+  <text>
+    <ko>RDP 파일 추가</ko>
+    <en>Add RDP files</en>
+  </text>
+  <text>
+    <ko>RDG 파일 저장</ko>
+    <en>Save RDG</en>
+  </text>
+  <text>
+    <ko>닫기</ko>
+    <en>Close</en>
+  </text>
+  <text>
+    <ko>RDP 추가 그룹을 선택하거나 입력한 뒤 'RDP 파일 추가'에서 여러 파일을 선택하세요.
+기존 목록에 주소·포트·계정을 추가합니다. 같은 주소와 포트는 중복 추가하지 않습니다.
+암호·게이트웨이·자동 암호 입력창 설정은 가져오지 않습니다.
+저장한 RDG는 RDCMan의 File → Open으로 열고, 연결 시 Shift+Enter로 암호를 입력하세요.
+WinHomeDesk 계정은 surface / Domain 빈칸 / 기본 포트 3390입니다.</ko>
+    <en>Choose or enter an import group, then select one or more files with Add RDP files.
+Addresses, ports and accounts are added. Duplicate address/port pairs are skipped.
+Passwords, gateways and automatic credential prompts are not imported.
+Open the RDG in RDCMan using File &gt; Open. Use Shift+Enter to enter credentials.
+WinHomeDesk: username surface / blank Domain / default port 3390.</en>
+  </text>
+  <text>
+    <ko>행: 포트를 숫자로 입력하세요.</ko>
+    <en> row: enter a numeric port.</en>
+  </text>
+  <text>
+    <ko>그룹에 추가할 RDP 파일 선택</ko>
+    <en>Select RDP files to add to the group</en>
+  </text>
+  <text>
+    <ko>추가 </ko>
+    <en>Added </en>
+  </text>
+  <text>
+    <ko>대 / 중복 제외 </ko>
+    <en> / duplicates skipped </en>
+  </text>
+  <text>
+    <ko>개 / 읽기 실패 </ko>
+    <en> / failed </en>
+  </text>
+  <text>
+    <ko>개</ko>
+    <en> files</en>
+  </text>
+  <text>
+    <ko>RDP 파일 추가 결과</ko>
+    <en>RDP import results</en>
+  </text>
+  <text>
+    <ko>RDP 파일 확인</ko>
+    <en>Check RDP file</en>
+  </text>
+  <text>
+    <ko>RDCMan 그룹 파일|*.rdg</ko>
+    <en>RDCMan group file|*.rdg</en>
+  </text>
+  <text>
+    <ko>저장했습니다.
+</ko>
+    <en>Saved.
+</en>
+  </text>
+  <text>
+    <ko>
+
+관리 PC의 RDCMan에서 File → Open으로 여세요.
+각 서버의 Logon Credentials에 전용 암호를 입력하면 연결할 수 있습니다.
+이 파일에는 암호가 저장되지 않습니다.</ko>
+    <en>
+
+Open this file in RDCMan with File &gt; Open.
+Enter each server's app password in Logon Credentials.
+No passwords are saved in this file.</en>
+  </text>
+  <text>
+    <ko>RDG 저장 완료</ko>
+    <en>RDG saved</en>
+  </text>
+  <text>
+    <ko>목록 확인</ko>
+    <en>Check list</en>
+  </text>
+  <text>
+    <ko>현재 표를 선택한 파일의 기기 목록으로 바꿉니다.
+그룹·기기명·주소·포트·계정만 가져오며, 암호와 기타 RDCMan 설정은 가져오지 않습니다.
+원본 파일을 보존하려면 다른 이름으로 저장하세요.</ko>
+    <en>Replace the current table with the selected file's device list?
+Only groups, names, addresses, ports and accounts are imported. Passwords and other settings are not imported.
+Save under another name to preserve the original file.</en>
+  </text>
+  <text>
+    <ko>목록 불러오기</ko>
+    <en>Load list</en>
+  </text>
+  <text>
+    <ko>RDCMan 3.22 실행 파일을 선택하세요.</ko>
+    <en>Select the RDCMan 3.22 executable.</en>
+  </text>
+  <text>
+    <ko>한글 입력 보정은 RDCMan 3.22용입니다. 해당 버전의 RDCMan.exe를 선택하세요.</ko>
+    <en>The Korean input fix supports RDCMan 3.22. Select that version's RDCMan.exe.</en>
+  </text>
+  <text>
+    <ko>RDCMan 3.22의 RDCMan.exe 선택</ko>
+    <en>Select RDCMan.exe for RDCMan 3.22</en>
+  </text>
+  <text>
+    <ko>실행 중인 RDCMan을 종료한 뒤 다시 눌러주세요. 한글 보정은 새로 실행할 때 적용됩니다.</ko>
+    <en>Close the running RDCMan instance first. The input fix applies when a new instance starts.</en>
+  </text>
+  <text>
+    <ko>실행 중인 RDCMan을 확인하지 못했습니다. RDCMan을 종료한 뒤 다시 실행하세요.</ko>
+    <en>Cannot check the running RDCMan instance. Close RDCMan and try again.</en>
+  </text>
+  <text>
+    <ko>내장 한글 보정 모듈을 찾지 못했습니다. 배포 파일을 다시 풀어주세요.</ko>
+    <en>The embedded Korean input module is missing. Extract the distribution again.</en>
+  </text>
+  <text>
+    <ko>한글 보정 모듈 확인에 실패했습니다.</ko>
+    <en>Cannot verify the Korean input module.</en>
+  </text>
+  <text>
+    <ko>RDCMan을 실행하지 못했습니다.</ko>
+    <en>Cannot launch RDCMan.</en>
+  </text>
+  <text>
+    <ko>RDCMan 3.22 실행: 새 엔진 + 한글 입력 보정 (PID </ko>
+    <en>RDCMan 3.22 launched: new engine + Korean input fix (PID </en>
+  </text>
+  <text>
+    <ko>접속하는 PC에서는 서버를 시작하지 않아도 됩니다. RDCMan에서 기존 RDG를 열어 접속하세요.</ko>
+    <en>No server start is needed on the connecting PC. Open your RDG in RDCMan to connect.</en>
+  </text>
+  <text>
+    <ko>RDCMan 실행</ko>
+    <en>Launch RDCMan</en>
+  </text>
+  <text>
+    <ko>RDCMan을 한글 보정으로 실행한 뒤 로그를 확인할 수 있습니다.</ko>
+    <en>Launch RDCMan with the Korean input fix before opening its log.</en>
+  </text>
+  <text>
+    <ko>보정 로그</ko>
+    <en>Input fix log</en>
+  </text>
+  <text>
+    <ko>캡처 계측: 서버 시작 후 약 2초부터 표시됩니다.</ko>
+    <en>Capture metrics appear about 2 seconds after server startup.</en>
+  </text>
+  <text>
+    <ko>전송 계측: 원격 PC 연결 후 표시됩니다.</ko>
+    <en>Send metrics appear after a remote PC connects.</en>
+  </text>
+  <text>
+    <ko>최신 화면 우선 처리 · 대기 화면은 최대 1장입니다.
+프레임 교체 횟수는 누적 지연을 줄이기 위해 생략한 화면 수입니다.</ko>
+    <en>Latest frame first · at most one frame is pending.
+Replaced frames are skipped to prevent accumulated delay.</en>
+  </text>
+  <text>
+    <ko>최신 화면 우선 · 교체 </ko>
+    <en>Latest frame first · replaced </en>
+  </text>
+  <text>
+    <ko>장 / 대기 최대 1장 · 처리 시작 시 화면 나이 </ko>
+    <en> frames / pending limit 1 · frame age at processing </en>
+  </text>
+  <text>
+    <ko> ms (최대 </ko>
+    <en> ms (max </en>
+  </text>
+  <text>
+    <ko>전달 단계 대기 </ko>
+    <en>Delivery wait </en>
+  </text>
+  <text>
+    <ko> ms · 캡처는 독립 실행 / 이 시간은 원격 화면 표시 지연이 아닙니다.</ko>
+    <en> ms · capture runs independently / this is not end-to-end display latency.</en>
+  </text>
+  <text>
+    <ko>최신 화면 우선 · 이 구간에 새로 받은 화면 없음 / 대기 최대 1장
+전달 단계 대기 </ko>
+    <en>Latest frame first · no new frame this interval / pending limit 1
+Delivery wait </en>
+  </text>
+  <text>
+    <ko>DirectX 새 프레임 </ko>
+    <en>DirectX new frames </en>
+  </text>
+  <text>
+    <ko>GDI 캡처 </ko>
+    <en>GDI capture </en>
+  </text>
+  <text>
+    <ko>캡처 </ko>
+    <en>Capture </en>
+  </text>
+  <text>
+    <ko> FPS / 목표 </ko>
+    <en> FPS / target </en>
+  </text>
+  <text>
+    <ko>  |  화면 변경 </ko>
+    <en>  |  changed </en>
+  </text>
+  <text>
+    <ko> FPS  |  구간 </ko>
+    <en> FPS  |  interval </en>
+  </text>
+  <text>
+    <ko>초
+</ko>
+    <en>s
+</en>
+  </text>
+  <text>
+    <ko>평균 캡처·축소 </ko>
+    <en>Avg capture/scale </en>
+  </text>
+  <text>
+    <ko> ms / 비교·복사 </ko>
+    <en> ms / compare/copy </en>
+  </text>
+  <text>
+    <ko> ms / 처리 대기 </ko>
+    <en> ms / processing wait </en>
+  </text>
+  <text>
+    <ko>최대 작업 </ko>
+    <en>Max work </en>
+  </text>
+  <text>
+    <ko> ms  |  캡처 일정 초과 </ko>
+    <en> ms  |  late </en>
+  </text>
+  <text>
+    <ko>회 / 오류 </ko>
+    <en> / errors </en>
+  </text>
+  <text>
+    <ko>회</ko>
+    <en> times</en>
+  </text>
+  <text>
+    <ko> · 독립 캡처 / 구간 </ko>
+    <en> · independent capture / interval </en>
+  </text>
+  <text>
+    <ko> ms / 최신 화면 제출 </ko>
+    <en> ms / latest-frame submit </en>
+  </text>
+  <text>
+    <ko> ms / 대기 화면 교체 </ko>
+    <en> ms / pending replacements </en>
+  </text>
+  <text>
+    <ko>장
+</ko>
+    <en> frames
+</en>
+  </text>
+  <text>
+    <ko>최대 캡처 작업 </ko>
+    <en>Max capture work </en>
+  </text>
+  <text>
+    <ko> ms · 일정 초과 </ko>
+    <en> ms · late </en>
+  </text>
+  <text>
+    <ko>연결 종료 · 마지막 구간: </ko>
+    <en>Disconnected · last interval: </en>
+  </text>
+  <text>
+    <ko>서버 전송: </ko>
+    <en>Server send: </en>
+  </text>
+  <text>
+    <ko>지원 계측 외 전송 방식 감지 — 이 구간의 전송 FPS·시간은 계측 범위 밖입니다.</ko>
+    <en>Uninstrumented graphics mode detected; send FPS and timing are unavailable for this interval.</en>
+  </text>
+  <text>
+    <ko> FPS  |  평균 압축·준비 </ko>
+    <en> FPS  |  avg encode/prepare </en>
+  </text>
+  <text>
+    <ko> ms / 전송 호출 </ko>
+    <en> ms / send call </en>
+  </text>
+  <text>
+    <ko>최대 압축·전송 </ko>
+    <en>Max encode/send </en>
+  </text>
+  <text>
+    <ko> ms  |  실패 </ko>
+    <en> ms  |  failures </en>
+  </text>
+  <text>
+    <ko>회
+</ko>
+    <en> times
+</en>
+  </text>
+  <text>
+    <ko>압축 영상 데이터 </ko>
+    <en>Encoded video </en>
+  </text>
+  <text>
+    <ko> Mbps  |  평균 갱신 영역 </ko>
+    <en> Mbps  |  avg updated area </en>
+  </text>
+  <text>
+    <ko>%  |  구간 </ko>
+    <en>%  |  interval </en>
+  </text>
+  <text>
+    <ko>초</ko>
+    <en>s</en>
+  </text>
+  <text>
+    <ko>실제: H.264 AVC420</ko>
+    <en>Active: H.264 AVC420</en>
+  </text>
+  <text>
+    <ko>실제: H.264 AVC444 / CPU</ko>
+    <en>Active: H.264 AVC444 / CPU</en>
+  </text>
+  <text>
+    <ko>실제: H.264 AVC444v2 / CPU</ko>
+    <en>Active: H.264 AVC444v2 / CPU</en>
+  </text>
+  <text>
+    <ko>실제: GFX Planar / CPU</ko>
+    <en>Active: GFX Planar / CPU</en>
+  </text>
+  <text>
+    <ko>실제: GFX 무압축</ko>
+    <en>Active: GFX uncompressed</en>
+  </text>
+  <text>
+    <ko>실제: 호환 비트맵 / CPU</ko>
+    <en>Active: compatible bitmap / CPU</en>
+  </text>
+  <text>
+    <ko>전송 방식</ko>
+    <en>Graphics</en>
+  </text>
+  <text>
+    <ko>자동 — H.264 AVC420 우선 (기본)</ko>
+    <en>Auto - prefer H.264 AVC420 (default)</en>
+  </text>
+  <text>
+    <ko>글자 선명도 — H.264 AVC444 우선</ko>
+    <en>Text clarity - prefer H.264 AVC444</en>
+  </text>
+  <text>
+    <ko>GFX Planar — 무손실 색상 압축</ko>
+    <en>GFX Planar - lossless color compression</en>
+  </text>
+  <text>
+    <ko>호환 비트맵 — 기존 전송 방식</ko>
+    <en>Compatible bitmap - legacy mode</en>
+  </text>
+  <text>
+    <ko>영상 압축</ko>
+    <en>Encoder</en>
+  </text>
+  <text>
+    <ko>GPU 우선 — 사용 불가 시 CPU (AVC420)</ko>
+    <en>Prefer GPU - CPU fallback (AVC420)</en>
+  </text>
+  <text>
+    <ko>CPU — 호환 모드</ko>
+    <en>CPU - compatibility mode</en>
+  </text>
+  <text>
+    <ko>사용 중: GPU H.264</ko>
+    <en>Active: GPU H.264</en>
+  </text>
+  <text>
+    <ko>사용 중: CPU (GPU 대체)</ko>
+    <en>Active: CPU (GPU fallback)</en>
+  </text>
+  <text>
+    <ko>사용 중: CPU H.264</ko>
+    <en>Active: CPU H.264</en>
+  </text>
+  <text>
+    <ko>사용 중: CPU (비 H.264)</ko>
+    <en>Active: CPU (non-H.264)</en>
+  </text>
+  <text>
+    <ko>시스템 소리 전송</ko>
+    <en>Stream system audio</en>
+  </text>
+  <text>
+    <ko>소리 전송: 서버 시작 대기</ko>
+    <en>Audio: waiting for server start</en>
+  </text>
+  <text>
+    <ko>소리 전송 중 · 클라이언트 재생 확인 대기</ko>
+    <en>Audio streaming · awaiting playback confirmation</en>
+  </text>
+  <text>
+    <ko>소리: 서버 약 </ko>
+    <en>Audio: server ~</en>
+  </text>
+  <text>
+    <ko>ms / 클라이언트 보고 </ko>
+    <en>ms / client reports </en>
+  </text>
+  <text>
+    <ko>소리 캡처 중 · 44.1kHz 스테레오 / 연결 대기</ko>
+    <en>Audio capture · 44.1 kHz stereo / awaiting connection</en>
+  </text>
+  <text>
+    <ko>소리 캡처 실패 · 출력 장치 확인 / 자동 재시도</ko>
+    <en>Audio capture failed · check output device / retrying</en>
+  </text>
+  <text>
+    <ko>출력 장치 변경 · 소리 캡처 다시 시작 중</ko>
+    <en>Output device changed · restarting audio capture</en>
+  </text>
+  <text>
+    <ko>원격 오디오 채널 준비됨 · 44.1kHz 스테레오</ko>
+    <en>Audio channel ready · 44.1 kHz stereo</en>
+  </text>
+  <text>
+    <ko>클라이언트에서 소리 꺼짐 · 이 컴퓨터에서 재생으로 설정</ko>
+    <en>Client audio is off · enable playback on the client</en>
+  </text>
+  <text>
+    <ko>클라이언트가 지원하는 오디오 형식 없음</ko>
+    <en>No compatible client audio format</en>
+  </text>
+  <text>
+    <ko>오디오 전송 오류 · 연결을 끊고 다시 접속하세요</ko>
+    <en>Audio send error · disconnect and reconnect</en>
+  </text>
+  <text>
+    <ko>오디오 채널 시작 실패 · 다시 접속하세요</ko>
+    <en>Audio channel failed · reconnect</en>
+  </text>
+  <text>
+    <ko>소리 전송 중 · 원격 PC의 음량도 확인하세요</ko>
+    <en>Audio streaming · check the client volume too</en>
+  </text>
+  <text>
+    <ko>NLA 인증 키를 만들 수 없습니다.</ko>
+    <en>Cannot derive the NLA authentication key.</en>
+  </text>
+  <text>
+    <ko>동일한 이름의 예약 작업이 WinHomeDesk 설정과 다릅니다. 작업 스케줄러에서 확인하세요.</ko>
+    <en>A scheduled task with this name differs from WinHomeDesk settings. Check Task Scheduler.</en>
+  </text>
+  <text>
+    <ko>자동 시작 방식이 올바르지 않습니다.</ko>
+    <en>Invalid startup mode.</en>
+  </text>
+  <text>
+    <ko>자동 시작 변경 및 복원이 실패했습니다. 작업 스케줄러와 시작 프로그램 설정을 확인하세요. </ko>
+    <en>Startup change and rollback failed. Check Task Scheduler and startup entries. </en>
+  </text>
+  <text>
+    <ko>현재 실행 중인 WinHomeDesk 경로만 자동 시작에 등록할 수 있습니다.</ko>
+    <en>Only the running WinHomeDesk executable can be registered for startup.</en>
+  </text>
+  <text>
+    <ko>관리자 설정 도구를 실행하지 못했습니다.</ko>
+    <en>Cannot start the administrator setup helper.</en>
+  </text>
+  <text>
+    <ko>관리자 자동 시작을 저장하지 못했습니다. 관리자 설정 도구에 표시된 원인을 확인하세요.</ko>
+    <en>Cannot save administrator startup. Check the error shown by the setup helper.</en>
+  </text>
+  <text>
+    <ko>UAC 승인이 취소되어 기존 자동 시작 설정을 유지합니다.</ko>
+    <en>UAC was cancelled. Existing startup settings are unchanged.</en>
+  </text>
+  <text>
+    <ko>현재 로그인한 관리자 계정으로 UAC를 승인해야 합니다. 다른 관리자 계정의 암호로 등록할 수 없습니다.</ko>
+    <en>Approve UAC with the currently signed-in administrator account. A different administrator account is not supported.</en>
+  </text>
+  <text>
+    <ko>자동 시작 설정 실패
+</ko>
+    <en>Startup setup failed
+</en>
+  </text>
+  <text>
+    <ko>언어 설정을 저장하지 못했습니다.
+</ko>
+    <en>Cannot save the language setting.
+</en>
+  </text>
+</translations>
