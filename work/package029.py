@@ -1,0 +1,123 @@
+from pathlib import Path
+import shutil,zipfile,json,hashlib
+w=Path(__file__).resolve().parent;out=w.parent/'outputs';pkg=w/'package/WinHomeDesk-0.2.9';old=w/'package/WinHomeDesk-0.2.8'
+assert not pkg.exists(),'Use a fresh package directory'
+shutil.copytree(old,pkg);shutil.copy2(w/'WinHomeDesk.exe',pkg/'WinHomeDesk.exe')
+guide='''WinHomeDesk 0.2.9 - 관리자 권한 로그인 자동 실행
+
+설치 / 업데이트
+1. 기존 프로그램을 트레이의 '종료 (서버도 종료)'로 완전히 종료합니다.
+2. WinHomeDesk-0.2.9-Windows-x64.zip 전체를 새 폴더에 풉니다.
+   EXE만 교체하지 마세요. engine 폴더를 함께 사용합니다.
+3. WinHomeDesk.exe를 실행합니다. 제목에서 0.2.9와 현재 권한을 확인합니다.
+4. 자동 시작을 사용한다면 새 폴더의 프로그램에서 환경 설정을 다시 저장합니다.
+
+관리자 권한 자동 실행 설정 - 접속받는 서피스에서
+1. 원격 서버가 실행 중이라면 먼저 중지합니다. UAC 보안 화면 전환 시 연결이 끊길 수 있습니다.
+2. 환경 설정에서 'Windows 로그인 시 트레이에서 자동 실행'을 선택합니다.
+3. '관리자 권한으로 자동 실행 (작업 스케줄러 / 저장 시 UAC 승인)'을 선택합니다.
+4. 서버도 자동 시작하려면 메인 화면에서 주소·암호·공유 동의를 확인한 후
+   '로그인 시 원격 서버도 시작 (현재 설정·암호 저장)'도 선택합니다.
+5. '설정 저장'을 누르고 Windows UAC를 승인합니다.
+   현재 로그인한 관리자 계정의 승인이 필요합니다.
+   일반 사용자 계정에서 다른 관리자 계정 암호를 넣어 등록하는 방식은 지원하지 않습니다.
+6. 다음 Windows 로그인 때부터 관리자 권한으로 실행됩니다.
+   재로그인 후 제목의 '관리자 권한' 표시와 서버 상태를 확인합니다.
+   설정 저장만으로 현재 실행 중인 프로그램의 권한은 바뀌지 않습니다.
+   지금 바로 관리자 실행하려면 완전 종료 후 EXE를 '관리자 권한으로 실행'하세요.
+
+동작과 해제
+- Windows 작업 스케줄러에 WinHomeDesk-<현재 사용자 SID> 작업을 만듭니다.
+- 현재 사용자의 로그인 약 5초 후, 해당 사용자의 대화형 세션에서 최고 권한으로 실행합니다.
+- Windows 계정 암호를 저장하지 않습니다. 로그인 전 실행이나 SYSTEM 서비스가 아닙니다.
+- 앱 전용 접속 암호는 서버 자동 시작을 선택한 경우에만 현재 Windows 계정으로 암호화해 저장합니다.
+- 관리자 자동 실행 사용 시 기존 WinHomeDesk/SurfaceDesk 일반 시작 항목을 제거합니다.
+- 관리자 옵션 해제 후 저장하면 예약 작업을 제거하고 일반 시작 항목으로 전환합니다.
+- 로그인 자동 실행 자체를 해제하면 예약 작업과 기존 시작 항목을 모두 제거합니다.
+- 기존 관리자 작업을 변경·삭제할 때에도 UAC 승인이 필요할 수 있습니다.
+- UAC 취소 시 변경하지 않으며, 전환 실패 시 기존 등록과 설정 복원을 시도합니다.
+- 노트북 배터리 사용 중에도 작업 시작을 허용하며 예약 작업 실행 시간 제한을 두지 않습니다.
+  Windows 절전·잠금·UAC 보안 화면 제약은 그대로입니다.
+- 프로그램 폴더 이동이나 업데이트 후에는 새 EXE에서 설정을 다시 저장하세요.
+
+기본 서버 사용
+- 접속받는 서피스: 실제 IPv4 주소 / 기본 TCP 3390 / 사용자 surface / Domain 빈칸.
+- Windows PIN 대신 WinHomeDesk 창에 표시된 현재 앱 전용 암호(12자 이상)를 사용합니다.
+- 화면 공유 확인란 선택 후 '서버 시작', LISTENING 확인 후 연결합니다.
+- 127.0.0.1은 같은 PC에서만 쓸 수 있는 주소입니다.
+- '연결 파일 저장'은 .rdp를 만듭니다. 'RDCMan 그룹 관리'는 여러 대의 .rdg를 만듭니다.
+- 그룹 관리의 'RDP 파일 추가'로 주소·포트·계정을 가져올 수 있습니다. 암호는 가져오지 않습니다.
+- RDG는 RDCMan File > Open으로 열고 서버 선택 후 Shift+Enter로 암호를 입력할 수 있습니다.
+- 창의 X는 트레이로 숨깁니다. 완전 종료는 트레이의 '종료 (서버도 종료)'입니다.
+- 자동 서버 시작을 끈 상태에서는 완전 종료 후 재실행할 때 새 임의 암호가 생성됩니다.
+
+RDCMan 3.22 한글 입력 - 접속하는 PC에서
+- RDCMan 3.22는 별도로 준비합니다. Microsoft 실행 파일은 포함하지 않습니다.
+- 실행 중인 RDCMan을 종료하고 WinHomeDesk의 'RDCMan 실행 (한글 보정)'을 누릅니다.
+- 처음 한 번 RDCMan 3.22의 RDCMan.exe를 선택한 뒤 기존 RDG로 연결합니다.
+- 이후에도 WinHomeDesk 버튼 또는 트레이 메뉴로 RDCMan을 실행해야 보정이 적용됩니다.
+- 접속하는 PC에서는 서버 시작이 필요 없습니다. 원본 RDCMan 파일은 바꾸지 않습니다.
+- 경로 변경과 한글 보정 로그는 환경 설정에서 확인합니다.
+- 오른쪽 Alt 한영 변환 옵션은 접속받는 서피스에서 설정하고 서버 재시작 후 적용합니다.
+
+성능 / 소리
+- 비교 시작 조합: 균형 1920px / 30 FPS / 자동 DirectX / 자동 AVC420 / GPU 우선.
+- 목표 FPS는 20 / 30 / 45이며 실제 전송 속도와 다를 수 있습니다.
+- 설정 변경은 서버 중지 > 변경 > 서버 시작 > 재접속 순서입니다.
+- 소리는 서버의 '시스템 소리 전송'과 클라이언트의 '이 컴퓨터에서 재생'을 함께 켭니다.
+- 문제 발생 직후 '로그 저장'을 눌러 당시 클라이언트·설정과 함께 확인합니다.
+
+제약과 확인
+- 관리자 자동 실행은 같은 Windows 관리자 계정에서 사용합니다.
+- 실제 관리자 작업 등록·UAC 승인·재로그인 시험은 제작 환경의 COM 접근 제한으로 수행하지 못했습니다.
+  첫 설정 시 저장 성공과 다음 로그인 후 '관리자 권한' 표시를 확인해 주세요.
+- UAC 보안 화면 / 잠금 / 로그인 전 접속 / 절전 상태 제어는 지원하지 않습니다.
+- 관리자 권한은 높은 권한 앱의 입력 차단을 줄일 수 있지만 모든 앱 조작을 보장하지 않습니다.
+- VPN 출구 고정 IP와 외부에서 접속할 수 있는 서버 주소는 다를 수 있습니다.
+- 서버 엔진과 한글 보정 모듈은 0.2.8과 동일합니다.
+
+데이터 위치
+- 서버 설정: %LOCALAPPDATA%\\SurfaceDesk\\preferences.xml
+- 서버 인증서: %LOCALAPPDATA%\\SurfaceDesk\\shadow
+- 한글 보정 캐시·로그: %LOCALAPPDATA%\\WinHomeDesk\\Client
+- 프로그램 삭제 전 로그인 자동 실행을 해제하고 설정 저장을 눌러 작업을 제거하세요.
+'''
+(w/'사용안내029.txt').write_text(guide,encoding='utf-8')
+(pkg/'사용안내.txt').write_text(guide,encoding='utf-8-sig');(out/'WinHomeDesk-사용안내.txt').write_text(guide,encoding='utf-8-sig')
+native=json.loads((old/'SHA256.json').read_text(encoding='utf-8'))
+for p in (pkg/'engine').rglob('*'):
+ if p.is_file():assert hashlib.sha256(p.read_bytes()).hexdigest()==native[str(p.relative_to(pkg))]
+checks=(w/'startup029-tests.txt').read_text(encoding='utf-8')
+assert 'PASS existing elevated task reflected in options' in checks
+assert 'PASS rollback off mutation 3' in checks
+validation='''WinHomeDesk 0.2.9 검증
+빌드 성공. 실제 설정 UI 렌더링 및 배치 확인.
+설정 호환, 암호화, 트레이, 서버 종료 회귀 통과.
+예약 작업 XML 및 SID/명령 검증, 일반/관리자/해제 전환, 각 단계 오류 복원, UAC 취소 모델 시험 통과.
+실제 작업 스케줄러 COM 검증: 환경의 E_ACCESSDENIED로 SKIP.
+실제 예약 작업 등록·UAC 승인·로그인 실행은 시험하지 않음.
+서버 엔진 모든 파일은 0.2.8 배포본 해시와 동일. 네이티브 RDP 경로는 변경하지 않음.
+
+'''+checks
+(pkg/'검증결과.txt').write_text(validation,encoding='utf-8-sig')
+notice=pkg/'licenses/NOTICE.txt';notice.write_text(notice.read_text(encoding='utf-8-sig')+'\n0.2.9: opt-in highest-privilege interactive logon task, current-user UAC registration helper, transactional startup migration. Native server and IME module unchanged.\n',encoding='utf-8')
+manifest={str(p.relative_to(pkg)):hashlib.sha256(p.read_bytes()).hexdigest() for p in pkg.rglob('*') if p.is_file() and p.name!='SHA256.json'}
+(pkg/'SHA256.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+archive=out/'WinHomeDesk-0.2.9-Windows-x64.zip'
+with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,6) as z:
+ for p in pkg.rglob('*'):
+  if p.is_file():z.write(p,p.relative_to(pkg.parent))
+replace=['SurfaceDesk.cs','SurfaceDesk.Lifecycle.cs','DesktopOptions.cs','Build.ps1','TestDesktopOptions.cs','TestLifecycle017.cs']
+added=['StartupRegistration.cs','TestStartup029.cs','test029.py','build_gui029.py','package029.py','사용안내029.txt']
+source=out/'WinHomeDesk-0.2.9-Source.zip'
+with zipfile.ZipFile(out/'WinHomeDesk-0.2.8-Source.zip') as before,zipfile.ZipFile(source,'w',zipfile.ZIP_DEFLATED,6) as z:
+ for info in before.infolist():
+  rel=info.filename.removeprefix('WinHomeDesk-Source/')
+  if rel in replace or rel in ['BUILD-INFO.txt','licenses/NOTICE.txt']:continue
+  z.writestr(info,before.read(info))
+ for name in replace+added:z.write(w/name,'WinHomeDesk-Source/'+name)
+ z.write(notice,'WinHomeDesk-Source/licenses/NOTICE.txt')
+ z.writestr('WinHomeDesk-Source/BUILD-INFO.txt',before.read('WinHomeDesk-Source/BUILD-INFO.txt').decode().replace('build_gui028.py','build_gui029.py')+'\n0.2.9 adds StartupRegistration.cs; GUI requires Microsoft.CSharp.dll (.NET Framework built-in). Test with test029.py; no live Task Scheduler or registry changes are made by tests.\n')
+for path in [archive,source]:
+ with zipfile.ZipFile(path) as z:assert z.testzip() is None
+ print(path.name,path.stat().st_size,hashlib.sha256(path.read_bytes()).hexdigest())

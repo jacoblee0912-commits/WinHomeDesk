@@ -1,0 +1,59 @@
+﻿WinHomeDesk 0.2.9 검증
+빌드 성공. 실제 설정 UI 렌더링 및 배치 확인.
+설정 호환, 암호화, 트레이, 서버 종료 회귀 통과.
+예약 작업 XML 및 SID/명령 검증, 일반/관리자/해제 전환, 각 단계 오류 복원, UAC 취소 모델 시험 통과.
+실제 작업 스케줄러 COM 검증: 환경의 E_ACCESSDENIED로 SKIP.
+실제 예약 작업 등록·UAC 승인·로그인 실행은 시험하지 않음.
+서버 엔진 모든 파일은 0.2.8 배포본 해시와 동일. 네이티브 RDP 경로는 변경하지 않음.
+
+TestDesktopOptions
+Settings: encrypted roundtrip, opt-in default, command quoting, rollback, disable, validation PASS (fake startup registry only)
+
+
+TestLifecycle017
+Lifecycle: X keeps server alive, restore, explicit exit cleanup, shutdown policy PASS
+
+
+TestStartup029
+PASS XML roundtrip with Korean, ampersand and spaces
+
+PASS foreign SID / unexpected action / relative path rejected
+
+PASS normal to admin removes both Run entries
+
+PASS admin to normal removes task
+
+PASS off removes task and Run entries
+
+PASS rollback admin mutation 1
+
+PASS rollback admin mutation 2
+
+PASS rollback admin mutation 3
+
+PASS rollback normal mutation 1
+
+PASS rollback normal mutation 2
+
+PASS rollback normal mutation 3
+
+PASS rollback off mutation 1
+
+PASS rollback off mutation 2
+
+PASS rollback off mutation 3
+
+PASS cancel restores preferences without repeating elevation
+
+COM creating service
+
+SKIP real Task Scheduler COM validation: sandbox access denied (0x80070005)
+
+PASS existing elevated task reflected in options
+
+PASS disable login clears dependent options
+
+PASS elevation remains opt-in when re-enabling login
+
+No Task Scheduler registration, startup registry mutation, UAC prompt or logout performed.
+

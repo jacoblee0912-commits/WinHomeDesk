@@ -1,0 +1,29 @@
+WinHomeDesk 0.2.5 custom prototype. Custom files and original icon licensed under Apache-2.0.
+Based on FreeRDP 3.32.3-dev0, commit dae0390a42ab271fa07a35979dfcd5671f83a949.
+Upstream copyright and license headers retained. https://github.com/FreeRDP/FreeRDP
+Modified Windows shadow subsystem (GDI/DXGI capture and GPU resizing), CLI startup/security/config path,
+latest-frame mailbox and capture/delivery separation, high-resolution pacing, tuned OpenH264 CPU profile and stage metrics,
+WASAPI loopback system audio, authenticated rdpsnd output, bounded audio queue,
+compiler thread compatibility, graphics capability negotiation/color-depth fallback, diagnostic counters, test targets and GUI.
+OpenH264 2.7.0 (BSD-2-Clause), software encoding: https://github.com/cisco/openh264/tree/v2.7.0
+MSYS2 UCRT64 runtime packages: OpenSSL 3.6.5, zlib-ng-compat 2.3.3, OpenH264 2.7.0-1,
+libgcc/libstdc++ 16.2.0-6 and libwinpthread 14.0.0.r569.g34eeafb7d-1. Package hashes in dependency-manifest.json.
+Source/recipes: https://github.com/msys2/MINGW-packages/tree/master/mingw-w64-openh264
+https://mirror.msys2.org/mingw/sources/mingw-w64-gcc-16.2.0-6.src.tar.zst
+https://gcc.gnu.org/pub/gcc/releases/gcc-16.2.0/
+https://mirror.msys2.org/mingw/sources/mingw-w64-winpthreads-14.0.0.r569.g34eeafb7d-1.src.tar.zst
+Uses Windows Direct3D 11, DXGI and D3DCompiler; no Microsoft icon is copied.
+No RDPWrap code/executable or patched Windows remote desktop service is included.
+
+0.2.1 additions: H.264 worker with input pumping on the transport owner thread; Windows Media Foundation hardware AVC420 encoder with CPU fallback, high-resolution result waits, stream-change and parameter-set handling. Uses Windows mf/mfplat/mfuuid/strmiids/ole32/oleaut32 system APIs. No Windows system DLLs are redistributed.
+
+0.2.5: configurable right Alt to Hangul mapping independent of foreground layout, diagnostic traces; backward-compatible storage/credentials.
+0.2.3 additions: 44.1kHz PCM capture/packet/negotiation compatibility, actual Microsoft playback regression; 10ms PCM chunks, WASAPI buffer/poll tuning, full-width Wave2 capture timestamps, duplicate-aware audio confirmation diagnostics.
+
+0.2.6: application-account NLA/CredSSP/NTLMv2 plus legacy TLS. Uses Windows CNG MD4 only for protocol-required NT key derivation. RDCoreSdk/RDCMan proprietary binaries are NOT included.
+
+0.2.7: disable unimplemented server UDP multitransport capability; match RDCMan 3.22 Shortpath configuration in tests. Retains application-account NLA/CredSSP/NTLMv2 plus legacy TLS. Uses Windows CNG MD4 only for protocol-required NT key derivation. RDCoreSdk/RDCMan proprietary binaries are NOT included.
+
+0.2.8: integrated process-local RDCMan 3.22 IME startup hook, embedded in WinHomeDesk.exe. The custom hook is Apache-2.0. Original RDCMan binaries are not redistributed or modified. Server binaries identical to 0.2.7.
+
+0.2.9: opt-in highest-privilege interactive logon task, current-user UAC registration helper, transactional startup migration. Native server and IME module unchanged.
