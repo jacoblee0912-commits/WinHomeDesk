@@ -5,7 +5,7 @@ entries=ET.parse(w/'Translations.xml').getroot().findall('text')
 mapping={e.findtext('ko'):e.findtext('en') for e in entries}
 assert len(mapping)==len(entries)
 assert all(v and not re.search('[가-힣]',v) for v in mapping.values())
-names=['SurfaceDesk.cs','SurfaceDesk.Lifecycle.cs','DesktopOptions.cs','RdgManager.cs','RdcManClient.cs','PerformanceMetrics.cs','GraphicsMode.cs','EncoderMode.cs','AudioMode.cs','AppCredentials.cs','StartupRegistration.cs','Localization.cs']
+names=['SeparateMonitors.cs','MonitorSharing.cs','SurfaceDesk.cs','SurfaceDesk.Lifecycle.cs','DesktopOptions.cs','RdgManager.cs','RdcManClient.cs','PerformanceMetrics.cs','GraphicsMode.cs','EncoderMode.cs','AudioMode.cs','AppCredentials.cs','StartupRegistration.cs','Localization.cs']
 for name in names:
  s=(w/name).read_text(encoding='utf-8-sig')
  for literal in re.findall(r'L\.T\(("(?:[^"\\]|\\.)*")\)',s):assert json.loads(literal) in mapping,(name,literal)

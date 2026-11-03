@@ -92,7 +92,7 @@ public sealed partial class SurfaceDesk {
     DesktopOptions CurrentOptions(bool autoServer) {
         var result=new DesktopOptions {Host=Convert.ToString(addresses.SelectedItem),Port=(int)port.Value,
             Quality=quality.SelectedIndex,FrameRate=frameRate.SelectedIndex,GraphicsMode=graphicsMode.SelectedIndex,AudioEnabled=audioEnabled.Checked,EncoderMode=encoderMode.SelectedIndex==0?"auto":"cpu",
-            Language=L.Language,StartupElevated=preferences.StartupElevated,RightAltHangul=preferences.RightAltHangul,RdcManPath=preferences.RdcManPath,CaptureMode=captureMode.SelectedIndex==1?"gdi":"auto",StartServerAtLogin=autoServer};
+            MonitorScope=preferences.MonitorScope,Language=L.Language,StartupElevated=preferences.StartupElevated,RightAltHangul=preferences.RightAltHangul,RdcManPath=preferences.RdcManPath,CaptureMode=captureMode.SelectedIndex==1?"gdi":"auto",StartServerAtLogin=autoServer};
         if(autoServer) {
             if(!consent.Checked)throw new InvalidOperationException(L.T("먼저 현재 화면 공유 확인란을 선택하세요."));
             if(password.Text.Length<12)throw new InvalidOperationException(L.T("전용 암호를 12자 이상 입력하세요."));
@@ -130,7 +130,7 @@ public sealed partial class SurfaceDesk {
     void ShowOptions() {
         if(testMode)return;
         try {using(var dialog=CreateOptionsDialog(new ManagedStartupRegistration()))dialog.ShowDialog(this);}
-        catch(Exception ex){MessageBox.Show(this,L.T("환경 설정을 열지 못했습니다.\n")+ex.Message);}
+        catch(Exception ex){AddLog("Options error: "+ex.GetType().Name+" HRESULT=0x"+ex.HResult.ToString("X8")+" "+ex.StackTrace);MessageBox.Show(this,L.T("환경 설정을 열지 못했습니다.\n")+ex.Message);}
     }
     Form CreateOptionsDialog(IStartupRegistration registration) {
         string startupCommand=registration.Read();

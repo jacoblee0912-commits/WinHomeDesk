@@ -13,6 +13,7 @@
 #include <freerdp/client/rdpgfx.h>
 #include <freerdp/addin.h>
 #include <winpr/synch.h>
+#include "FreeRDP/server/shadow/Win/surface_monitors.h"
 static unsigned frames;
 static unsigned gfxDecoded, lastCodec;
 static pcRdpgfxSurfaceCommand decode_surface;
@@ -53,7 +54,11 @@ static BOOL post(freerdp* i) {
     i->context->update->DesktopResize=resize;return TRUE;
 }
 int main(int argc,char**argv) {
-    if(argc!=2 && argc!=3)return 2;
+    const char* testPassword=getenv("SURFACE_PROBE_PASSWORD");
+    if(!testPassword && argc!=2 && argc!=3)return 2;
+    BOOL monitorTest=getenv("WINHOME_PROBE_MONITORS")!=NULL;
+    WhdLayout testLayout={0};UINT checkedMonitors=0;BOOL inputPending=FALSE;POINT expected={0};ULONGLONG inputDeadline=0;
+    if(monitorTest){whd_dpi_aware();const char* edge=getenv("SURFACE_DESK_MAX_EDGE");if(!whd_layout_read(&testLayout,whd_all_monitors(),edge?atoi(edge):1920))return 2;}
     WSADATA wsa; if(WSAStartup(MAKEWORD(2,2),&wsa)) return 2;
     freerdp* i=freerdp_new();if(!i)return 2;
     i->ContextSize=sizeof(rdpContext);i->PostConnect=post;i->PreConnect=pre;
@@ -75,7 +80,7 @@ int main(int argc,char**argv) {
     freerdp_settings_set_string(s,FreeRDP_ServerHostname,"127.0.0.1");
     freerdp_settings_set_uint32(s,FreeRDP_ServerPort,13390);
     freerdp_settings_set_string(s,FreeRDP_Username,argc==3?argv[2]:"surface");
-    freerdp_settings_set_string(s,FreeRDP_Password,argv[1]);
+    freerdp_settings_set_string(s,FreeRDP_Password,testPassword?testPassword:argv[1]);
     freerdp_settings_set_bool(s,FreeRDP_NlaSecurity,FALSE);
     freerdp_settings_set_bool(s,FreeRDP_ExtSecurity,FALSE);
     freerdp_settings_set_bool(s,FreeRDP_RdpSecurity,FALSE);
@@ -109,6 +114,19 @@ int main(int argc,char**argv) {
             if(!count)break;
             WaitForMultipleObjects(count,events,FALSE,mouseTest?5:100);
             if(!freerdp_check_event_handles(i->context))break;
+            if(monitorTest && (frames>0||gfxDecoded>0)) {
+                if(inputPending) {
+                    POINT actual;GetCursorPos(&actual);
+                    if(abs(actual.x-expected.x)<=1&&abs(actual.y-expected.y)<=1){printf("PROBE monitor_input=%u physical=%ld,%ld PASS\n",checkedMonitors+1,actual.x,actual.y);checkedMonitors++;inputPending=FALSE;}
+                    else if(GetTickCount64()>inputDeadline){printf("PROBE monitor_input FAIL expected=%ld,%ld actual=%ld,%ld\n",expected.x,expected.y,actual.x,actual.y);break;}
+                }
+                if(!inputPending) {
+                    if(checkedMonitors==testLayout.count)break;
+                    RECT r=testLayout.items[checkedMonitors].stream;UINT16 x=(UINT16)((r.left+r.right)/2),y=(UINT16)((r.top+r.bottom)/2);
+                    if(!whd_input_point(&testLayout,x,y,&expected)||!freerdp_input_send_mouse_event(i->context->input,PTR_FLAGS_MOVE,x,y))break;
+                    inputPending=TRUE;inputDeadline=GetTickCount64()+1500;
+                }
+            }
             if(!imeSent && frames>0 && getenv("WINHOME_PROBE_RALT")) {
                 for(int tap=0;tap<2;tap++) {
                     if(!freerdp_input_send_keyboard_event(i->context->input,KBD_FLAGS_EXTENDED,0x38) ||
@@ -146,7 +164,7 @@ int main(int argc,char**argv) {
             if(!durationSetting && frames>=2)break;
         }
         freerdp_disconnect(i);
-        if(mouseTest)SetCursorPos(original.x,original.y);
+        if(mouseTest||monitorTest)SetCursorPos(original.x,original.y);
     }
     printf("PROBE connected=%d frames=%u size=%ux%u\n",connected,frames,
            freerdp_settings_get_uint32(s,FreeRDP_DesktopWidth),
@@ -154,5 +172,5 @@ int main(int argc,char**argv) {
     printf("PROBE gfx_decoded=%u codec=%u\n",gfxDecoded,lastCodec);
     if(i->context->gdi)gdi_free(i);
     freerdp_context_free(i);freerdp_free(i);
-    return frames>0?0:1;
+    return (frames>0 && (!monitorTest||checkedMonitors==testLayout.count))?0:1;
 }

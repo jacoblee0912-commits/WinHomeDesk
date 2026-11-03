@@ -1,5 +1,7 @@
 # WinHomeDesk 0.3.0 설치·사용 안내
 
+0.3.3의 멀티 모니터·개별 창 연결 및 수정 사항은 [최신 Windows 안내](WINDOWS_MULTIMONITOR.ko.md)를 함께 확인하세요.
+
 **한국어** | [English](GUIDE.en.md)
 
 ## 한국어 / English 선택

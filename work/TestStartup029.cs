@@ -15,11 +15,21 @@ class PreviewAdmin : IStartupRegistration {
  public string Read(){return StartupTask.Command(Application.ExecutablePath,true);}
  public void Write(string value){throw new Exception("UI preview must not register tasks");}
 }
+class PreviewMissingTask : IStartupRegistration {
+ public string Read(){return WindowsStartupBackend.FindOptionalTask(delegate{throw Marshal.GetExceptionForHR(unchecked((int)0x80070002));}) as string;}
+ public void Write(string value){throw new Exception("Preview must not register tasks");}
+}
 class TestStartup029 {
  static void Check(bool ok,string message){if(!ok)throw new Exception(message);Console.WriteLine("PASS "+message);}
  static void Reject(Action action){bool caught=false;try{action();}catch{caught=true;}if(!caught)throw new Exception("Expected rejection");}
  [STAThread] static void Main(string[] args) {try{Run(args);}catch(Exception ex){Console.WriteLine("FAIL type="+ex.GetType().FullName+" message="+ex.Message+" hresult="+ex.HResult.ToString("X"));Environment.ExitCode=1;}}
  static void Run(string[] args) {
+  Exception missing=Marshal.GetExceptionForHR(unchecked((int)0x80070002));
+  Check(missing is FileNotFoundException,"Windows maps task-not-found HRESULT to FileNotFoundException");
+  Check(WindowsStartupBackend.FindOptionalTask(delegate{throw missing;})==null,"mapped missing task opens options with startup off");
+  Check(WindowsStartupBackend.FindOptionalTask(delegate{throw new COMException("missing",unchecked((int)0x80070002));})==null,"COM missing task also treated as absent");
+  object knownTask=new object();Check(Object.ReferenceEquals(WindowsStartupBackend.FindOptionalTask(()=>knownTask),knownTask),"existing task retained");
+  bool denied=false;try{WindowsStartupBackend.FindOptionalTask(delegate{throw new UnauthorizedAccessException("denied");});}catch(UnauthorizedAccessException){denied=true;}Check(denied,"access denied is not mistaken for absent registration");
   string sid=StartupTask.CurrentSid,exe=Path.Combine(Path.GetFullPath(args[0]),"한글 & space","WinHomeDesk.exe");
   string normal=StartupTask.Command(exe,false),xml=StartupTask.Xml(exe,sid);
   Check(StartupTask.ReadCommand(xml,sid)==StartupTask.Command(exe,true),"XML roundtrip with Korean, ampersand and spaces");
@@ -47,6 +57,9 @@ class TestStartup029 {
   }catch(UnauthorizedAccessException){Console.WriteLine("SKIP real Task Scheduler COM validation: sandbox access denied (0x80070005)");}
   finally {if(definition!=null)Marshal.FinalReleaseComObject(definition);if(service!=null)Marshal.FinalReleaseComObject(service);}
   Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);
+  using(var f=new SurfaceDesk(false,true))using(var d=(Form)typeof(SurfaceDesk).GetMethod("CreateOptionsDialog",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(f,new object[]{new PreviewMissingTask()})) {
+   d.Show();Application.DoEvents();Check(d.Visible&&!((CheckBox)d.Controls["LoginStartup"]).Checked,"options opens when task lookup throws HRESULT 80070002");d.Close();f.ExitApplication();
+  }
   using(var f=new SurfaceDesk(false,true))using(var d=(Form)typeof(SurfaceDesk).GetMethod("CreateOptionsDialog",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(f,new object[]{new PreviewAdmin()})) {
    d.Show();Application.DoEvents();var login=(CheckBox)d.Controls["LoginStartup"];var admin=(CheckBox)d.Controls["ElevatedStartup"];var server=(CheckBox)d.Controls["ServerStartup"];
    Check(login.Checked&&admin.Checked&&admin.Enabled,"existing elevated task reflected in options");

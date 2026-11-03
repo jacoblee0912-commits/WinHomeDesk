@@ -44,3 +44,18 @@ python work/test_client028.py
 ## 이 저장소를 준비하며 확인한 범위
 
 최신 GUI 빌드와 test029를 저장소 사본에서 확인합니다. 새 환경에서 네이티브 전체를 다시 빌드했거나 실제 서피스 간 접속을 다시 시험한 것은 아닙니다. 네이티브 원본은 0.2.9 소스 배포본에서 가져왔습니다.
+
+
+## 0.3.3 네이티브 엔진과 회귀 시험
+
+0.3.3은 GUI와 네이티브 엔진/DLL을 함께 빌드해야 합니다. 0.3.0 또는 Mac 엔진 DLL과 섞지 마세요.
+
+```powershell
+python work/test031.py --engine <완전한-엔진-폴더/WinHomeDesk-engine.exe> --compiler <LLVM-MinGW-clang.exe>
+python work/test032.py --compiler <LLVM-MinGW-clang.exe>
+python work/test033.py --compiler <LLVM-MinGW-clang.exe>
+```
+
+`test032.py`는 임시 루프백 TCP 포트 23730~23731을 사용해 다중 자식 프로세스의 생명주기를 시험합니다. 실제 입력을 주입하지 않습니다. `test033.py`는 실제 화면을 변경하지 않고 숨겨진 테스트 창에 변경 메시지를 보내 중지 처리를 검사합니다. 최신 검증 범위와 남은 장치 시험은 [Windows 안내](WINDOWS_MULTIMONITOR.ko.md)를 참고하세요.
+
+패키징은 `python work/package033.py --base <0.3.0-Windows-x64.zip> --output <빈-폴더>`를 사용합니다. Python `pefile`이 필요하며, 라이선스와 런타임은 기존 ZIP에서 가져오고 FreeRDP/WinPR DLL과 EXE는 현재 빌드 결과로 교체합니다.

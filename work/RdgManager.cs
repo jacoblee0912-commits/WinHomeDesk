@@ -76,6 +76,9 @@ public static class SurfaceRdg {
             Element(security,"authentication","Warn");
             XmlElement desktop=Element(server,"remoteDesktop",null);desktop.SetAttribute("inherit","None");
             Element(desktop,"colorDepth","32");
+            XmlElement display=Element(server,"displaySettings",null);display.SetAttribute("inherit","None");
+            Element(display,"smartSizeDockedWindows","Scale");
+            Element(display,"smartSizeUndockedWindows","Scale");
             XmlElement resources=Element(server,"localResources",null);resources.SetAttribute("inherit","None");
             Element(resources,"audioRedirection","Client");
             Element(resources,"audioRedirectionQuality","High");
@@ -184,7 +187,10 @@ public sealed class RdgManagerForm:Form {
     readonly TextBox title=new TextBox();
     readonly ComboBox importGroup=new ComboBox();
     readonly string currentHost;readonly int currentPort;
-    public RdgManagerForm(string host,int port) {
+    readonly List<SurfaceEntry> currentEntries;
+    public RdgManagerForm(string host,int port):this(host,port,null) {}
+    public RdgManagerForm(string host,int port,List<SurfaceEntry> entries) {
+        currentEntries=entries;
         currentHost=host;currentPort=port;Text=L.T("WinHomeDesk — RDCMan 그룹 파일 만들기");
         Font=new Font("맑은 고딕",10);ClientSize=new Size(920,590);MinimumSize=Size;StartPosition=FormStartPosition.CenterParent;
         Controls.Add(new Label{Text=L.T("여러 서피스를 그룹별로 등록하고 .rdg 파일로 저장하세요."),AutoSize=true,Location=new Point(18,16)});
@@ -214,6 +220,14 @@ public sealed class RdgManagerForm:Form {
         Button b=new Button{Text=text,Location=new Point(x,y),Size=new Size(width,34),Anchor=AnchorStyles.Left|AnchorStyles.Bottom};Controls.Add(b);return b;
     }
     void AddCurrent() {
+        if(currentEntries!=null) {
+            foreach(var entry in currentEntries) {
+                bool exists=false;
+                foreach(DataGridViewRow row in grid.Rows)if(!row.IsNewRow && Convert.ToString(row.Cells[2].Value)==entry.Host && Convert.ToString(row.Cells[3].Value)==entry.Port.ToString())exists=true;
+                if(!exists)grid.Rows.Add(entry.Group,entry.Name,entry.Host,entry.Port,entry.UserName,entry.Domain);
+            }
+            RefreshGroups();return;
+        }
         foreach(DataGridViewRow row in grid.Rows)if(!row.IsNewRow&&Convert.ToString(row.Cells[2].Value)==currentHost&&Convert.ToString(row.Cells[3].Value)==currentPort.ToString()) {grid.CurrentCell=row.Cells[2];return;}
         grid.Rows.Add(L.T("서피스"),Environment.MachineName,currentHost,currentPort,"surface","");RefreshGroups();
     }

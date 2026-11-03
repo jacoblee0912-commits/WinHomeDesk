@@ -1,5 +1,7 @@
 # WinHomeDesk 0.3.0: Installation and usage
 
+For 0.3.3 multi-monitor connections and fixes, see the [current Windows guide](WINDOWS_MULTIMONITOR.en.md).
+
 [한국어](GUIDE.ko.md) | **English**
 
 ## 1. Install or update

@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <stddef.h>
 typedef struct SurfaceDxgi SurfaceDxgi;
+SurfaceDxgi* surface_dxgi_create_output(HMONITOR monitor,int sourceWidth,int sourceHeight,int width,int height,HRESULT* error);
 SurfaceDxgi* surface_dxgi_create(int sourceWidth, int sourceHeight, int width, int height,
                                  HRESULT* error);
 /* 1 = new image, 0 = unchanged, -1 = failure. Always releases acquired frames. */

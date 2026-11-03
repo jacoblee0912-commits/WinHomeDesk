@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -76,9 +76,11 @@ public sealed partial class SurfaceDesk {
     }
     public void ApplyLanguage(string code) {
         L.Set(code);changingLanguage=true;languageSelector.SelectedIndex=code=="en"?1:0;changingLanguage=false;
-        L.ApplyStatic(this);
-        Text=L.T("WinHomeDesk — 독립 RDP 서버 0.3.0 · 실험 버전")+(StartupTask.IsElevated?L.T(" · 관리자 권한"):L.T(" · 일반 권한"));
+        changingMonitorScope=true;
+        try{L.ApplyStatic(this);}finally{changingMonitorScope=false;}
+        Text=L.T("WinHomeDesk — 독립 RDP 서버 0.3.3-local · 실험 버전")+(StartupTask.IsElevated?L.T(" · 관리자 권한"):L.T(" · 일반 권한"));
         performance.Relocalize();RefreshPerformance();UpdateStatus();
+        RefreshMonitorText();
         if(lastAudioLine!=null)audioStatus.Text=AudioCaption(lastAudioLine);
         if(tray!=null)L.ApplyMenu(tray.ContextMenuStrip.Items);RefreshTray();
     }

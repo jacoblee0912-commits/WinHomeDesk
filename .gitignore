@@ -35,3 +35,7 @@ shadow.key
 shadow.crt
 *.pfx
 *.p12
+/work/monitor031-test/
+/work/rdp-import-tests/
+
+/work/monitor032-test/

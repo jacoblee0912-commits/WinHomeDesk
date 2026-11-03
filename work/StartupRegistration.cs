@@ -88,9 +88,17 @@ public sealed class WindowsStartupBackend : IStartupBackend,IDisposable {
     }
     public string ReadTask() {
         object task=null;
-        try {task=Folder.GetTask(TaskName);return (string)((dynamic)task).Xml;}
-        catch(COMException ex){if(ex.ErrorCode==unchecked((int)0x80070002))return null;throw;}
+        // Resolve COM first: a missing COM component is not an absent task.
+        object taskFolder=Folder;
+        try {task=FindOptionalTask(()=>((dynamic)taskFolder).GetTask(TaskName));return task==null?null:(string)((dynamic)task).Xml;}
         finally{if(task!=null)Marshal.FinalReleaseComObject(task);}
+    }
+    public static object FindOptionalTask(Func<object> lookup) {
+        try{return lookup();}
+        // COM interop maps HRESULT 0x80070002 to FileNotFoundException on some
+        // Windows/.NET installations, not necessarily COMException.
+        catch(FileNotFoundException ex){if(ex.HResult==unchecked((int)0x80070002))return null;throw;}
+        catch(COMException ex){if(ex.ErrorCode==unchecked((int)0x80070002))return null;throw;}
     }
     public void WriteTask(string xml) {
         if(xml==null){if(ReadTask()!=null)Folder.DeleteTask(TaskName,0);return;}

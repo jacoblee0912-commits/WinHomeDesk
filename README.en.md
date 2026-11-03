@@ -1,8 +1,10 @@
 # WinHomeDesk
 
+Current source **0.3.3-local** includes Windows multi-monitor H.264, separate monitor connections, and settings/cursor fixes. [English usage and validation](docs/WINDOWS_MULTIMONITOR.en.md) · [한국어](docs/WINDOWS_MULTIMONITOR.ko.md). Existing GitHub Releases binaries remain at 0.3.0, separate from this source update.
+
 [한국어](README.md) | **English**
 
-WinHomeDesk is an experimental, standalone FreeRDP-based server for sharing the currently signed-in Windows desktop. It targets **Windows 11 Home x64**, including Surface Pro 8 and x64 Surface Pro 9 devices. The current release is **0.3.0**.
+WinHomeDesk is an experimental, standalone FreeRDP-based server for sharing the currently signed-in Windows desktop. It targets **Windows 11 Home x64**, including Surface Pro 8 and x64 Surface Pro 9 devices. The current source version is **0.3.3-local**.
 
 It does not use RDPWrap or patch Windows Remote Desktop Services. It shares an existing desktop; it does not create separate Windows user sessions. Access before sign-in, the lock screen, UAC secure desktop and sleeping PCs is not supported.
 
@@ -15,6 +17,9 @@ It does not use RDPWrap or patch Windows Remote Desktop Services. It shares an e
 - English and Korean guides and project descriptions are provided separately.
 
 ## Features
+
+- Primary, combined-all, or separate monitor connections
+- Per-monitor H.264, consecutive ports, and RDG export for RDCMan 2.93 and 3.22
 
 - DirectX (DXGI) capture with GDI fallback
 - H.264 AVC420, AVC444, GFX Planar and compatible bitmap modes
@@ -41,7 +46,8 @@ In **Settings**, select **Start in the tray when I sign in to Windows** and **Ru
 
 ## Documentation and source
 
-- [English installation and usage guide](docs/GUIDE.en.md)
+- [0.3.3 multi-monitor and separate-window guide](docs/WINDOWS_MULTIMONITOR.en.md)
+- [Basic installation and usage guide](docs/GUIDE.en.md)
 - [한국어 설치·사용 안내](docs/GUIDE.ko.md)
 - [Build and test instructions](docs/BUILD.en.md)
 - [Development history](CHANGELOG.md)

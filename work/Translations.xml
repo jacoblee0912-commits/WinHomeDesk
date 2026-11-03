@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <translations>
   <text>
-    <ko>WinHomeDesk — 독립 RDP 서버 0.3.0 · 실험 버전</ko>
-    <en>WinHomeDesk - RDP server 0.3.0 · Experimental</en>
+    <ko>WinHomeDesk — 독립 RDP 서버 0.3.3-local · 실험 버전</ko>
+    <en>WinHomeDesk - RDP server 0.3.3-local · Experimental</en>
   </text>
   <text>
     <ko>내 서피스 화면을 RDCMan으로 연결</ko>
@@ -123,16 +123,16 @@ Compare this with the certificate details in RDCMan.</en>
     <en>Quality</en>
   </text>
   <text>
-    <ko>균형 — 긴 변 최대 1920px (기본)</ko>
-    <en>Balanced - up to 1920px (default)</en>
+    <ko>균형 — 모니터당 최대 1920px (기본)</ko>
+    <en>Balanced - up to 1920px per monitor</en>
   </text>
   <text>
-    <ko>속도 우선 — 긴 변 최대 1440px</ko>
-    <en>Speed - up to 1440px</en>
+    <ko>속도 우선 — 모니터당 최대 1440px</ko>
+    <en>Fast - up to 1440px per monitor</en>
   </text>
   <text>
-    <ko>원본 선명도 — 원본 해상도</ko>
-    <en>Native resolution</en>
+    <ko>원본 우선 — 인코더 한도 내</ko>
+    <en>Native preferred - encoder limits apply</en>
   </text>
   <text>
     <ko>목표 FPS</ko>
@@ -1178,4 +1178,113 @@ Delivery wait </en>
     <en>Cannot save the language setting.
 </en>
   </text>
+  <text>
+    <ko>공유 모니터</ko>
+    <en>Share displays</en>
+  </text>
+  <text>
+    <ko>주 모니터만 공유</ko>
+    <en>Primary monitor only</en>
+  </text>
+  <text>
+    <ko>모든 모니터 공유</ko>
+    <en>All monitors</en>
+  </text>
+  <text>
+    <ko>모니터 확인 / RDCMan 안내</ko>
+    <en>Monitors / RDCMan help</en>
+  </text>
+  <text>
+    <ko>감지된 모니터: </ko>
+    <en>Detected monitors: </en>
+  </text>
+  <text>
+    <ko>RDCMan에서는 모든 원격 모니터를 한 화면으로 봅니다.
+새 RDG 파일은 창 크기에 맞춰 전체 화면을 축소합니다.
+기존 항목: Properties &gt; Display Settings &gt; Scale docked/undocked remote desktop to fit window.
+모니터 배치가 바뀌면 서버를 중지하고 다시 시작하세요.</ko>
+    <en>RDCMan shows all remote monitors on one canvas.
+New RDG files scale the full desktop to fit the window.
+Existing entries: Properties &gt; Display Settings &gt; Scale docked/undocked remote desktop to fit window.
+Stop and restart the server after changing the monitor layout.</en>
+  </text>
+  <text>
+    <ko>모니터 확인 실패: </ko>
+    <en>Monitor check failed: </en>
+  </text>
+  <text>
+    <ko>공유 범위 선택됨 · 엔진 모니터 목록은 아직 확인하지 않았습니다.</ko>
+    <en>Sharing scope selected; engine monitor list has not been checked yet.</en>
+  </text>
+  <text>
+    <ko>선택 범위: </ko>
+    <en>Selected scope: </en>
+  </text>
+  <text>
+    <ko>개 / 전송 영역 </ko>
+    <en> monitor(s) / stream area </en>
+  </text>
+  <text>
+    <ko>모든 모니터 화면 공유에 동의합니다. 주변 사람도 화면을 볼 수 있습니다.</ko>
+    <en>I consent to sharing ALL monitors. People nearby can also see the screens.</en>
+  </text>
+  <text>
+    <ko>주 모니터 화면 공유에 동의합니다. 주변 사람도 화면을 볼 수 있습니다.</ko>
+    <en>I consent to sharing the primary monitor. People nearby can see the screen.</en>
+  </text>
+  <text>
+    <ko>실제 공유: </ko>
+    <en>Sharing now: </en>
+  </text>
+  <text>
+    <ko>시작 전 예상: </ko>
+    <en>Before start (estimated): </en>
+  </text>
+  <text>
+    <ko>모니터별 개별 연결 (RDCMan)</ko>
+    <en>Separate monitor connections (RDCMan)</en>
+  </text>
+  <text>
+    <ko>개별 연결: </ko>
+    <en>Separate connections: </en>
+  </text>
+  <text>
+    <ko>개 / 포트 </ko>
+    <en> / ports </en>
+  </text>
+  <text>
+    <ko>개 포트</ko>
+    <en> ports</en>
+  </text>
+  <text>
+    <ko> · 소리는 첫 번째 연결만 / 성능 수치는 첫 연결 기준</ko>
+    <en> · Audio and metrics: first connection</en>
+  </text>
+  <text>
+    <ko>모니터별 포트 범위가 1~65535를 벗어납니다.</ko>
+    <en>The per-monitor port range must stay within 1–65535.</en>
+  </text>
+  <text>
+    <ko>모니터별 연결은 0.3.2 엔진이 필요합니다. ZIP 전체를 새 폴더에 압축 해제하세요.</ko>
+    <en>Separate connections require the 0.3.2 engine. Extract the complete ZIP to a new folder.</en>
+  </text>
+  <text>
+    <ko>모든 모니터 포트가 준비되지 않아 서버를 중지합니다. 로그와 포트 충돌을 확인하세요.</ko>
+    <en>Some monitor listeners did not become ready. All servers were stopped. Check the logs and port conflicts.</en>
+  </text>
+  <text>
+    <ko>개별 모드에서는 모니터마다 별도 포트로 접속합니다.
+연결 파일 저장 또는 RDCMan 그룹 관리에서 모니터별 RDG를 만드세요.
+RDCMan에서 각 항목을 연결한 뒤 Undock으로 개별 창을 여세요.
+소리는 첫 번째 항목만 전송합니다. 모든 창은 같은 Windows 세션을 공유합니다.
+방화벽에서 사용한 모든 TCP 포트의 접속을 허용해야 합니다.
+모니터 배치가 바뀌면 서버를 중지하고 다시 시작하세요.</ko>
+    <en>Separate mode uses one port per monitor.
+Save a connection file or use RDCMan groups to create the monitor RDG.
+Connect each entry in RDCMan, then use Undock for separate windows.
+Only the first entry sends audio. All windows share one Windows session.
+Allow the assigned TCP ports through your firewall.
+Restart the server after changing the monitor layout.</en>
+  </text>
+  <text><ko>모니터 RDG 저장</ko><en>Save monitor RDG</en></text>
 </translations>

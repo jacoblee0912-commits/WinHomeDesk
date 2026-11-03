@@ -13,6 +13,7 @@ public sealed class DesktopOptions {
     public bool RightAltHangul=true;
     public bool StartupElevated=false;
     public string Language="ko";
+    public string MonitorScope="legacy";
     public string RdcManPath="";
     static readonly byte[] entropy=Encoding.UTF8.GetBytes("SurfaceDesk/preferences/v1");
     public void ProtectPassword(string password) {
@@ -26,6 +27,7 @@ public sealed class DesktopOptions {
         try{return Encoding.UTF8.GetString(bytes);}finally{Array.Clear(bytes,0,bytes.Length);}
     }
     public void Validate() {
+        if(MonitorScope!="legacy" && MonitorScope!="primary" && MonitorScope!="all" && MonitorScope!="separate")throw new InvalidDataException("Invalid monitor sharing scope.");
         if(Language!="ko" && Language!="en")throw new InvalidDataException("Invalid UI language.");
         if(RdcManPath==null || RdcManPath.Length>32767 || (RdcManPath.Length>0 && (!Path.IsPathRooted(RdcManPath) || RdcManPath.IndexOf('"')>=0)))
             throw new InvalidDataException("저장된 RDCMan 경로가 올바르지 않습니다.");

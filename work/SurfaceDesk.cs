@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 [assembly: System.Reflection.AssemblyTitle("WinHomeDesk")]
 [assembly: System.Reflection.AssemblyProduct("WinHomeDesk")]
-[assembly: System.Reflection.AssemblyVersion("0.3.0.0")]
+[assembly: System.Reflection.AssemblyVersion("0.3.3.0")]
 public sealed partial class SurfaceDesk : Form {
     readonly TextBox password = new TextBox();
     readonly ComboBox addresses = new ComboBox();
@@ -32,7 +32,7 @@ public sealed partial class SurfaceDesk : Form {
     string root = AppDomain.CurrentDomain.BaseDirectory;
     public SurfaceDesk() : this(false,false) {}
     public SurfaceDesk(bool startup,bool test) {
-        Text=L.T("WinHomeDesk — 독립 RDP 서버 0.3.0 · 실험 버전");
+        Text=L.T("WinHomeDesk — 독립 RDP 서버 0.3.3-local · 실험 버전");
         ClientSize=new Size(790,980); MinimumSize=Size; Font=new Font("맑은 고딕",10);
         StartPosition=FormStartPosition.CenterScreen;
         Label heading=new Label {Text=L.T("내 서피스 화면을 RDCMan으로 연결"),Font=new Font(Font,FontStyle.Bold),AutoSize=true,Location=new Point(22,20)};
@@ -66,10 +66,7 @@ public sealed partial class SurfaceDesk : Form {
         Button cert=new Button {Text=L.T("인증서 지문 확인"),Location=new Point(510,293),Size=new Size(190,38)};
         cert.Click+=delegate {
             try {
-                string path=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"SurfaceDesk","shadow","shadow.crt");
-                string pem=File.ReadAllText(path).Replace("-----BEGIN CERTIFICATE-----","").Replace("-----END CERTIFICATE-----","");
-                X509Certificate2 certificate=new X509Certificate2(Convert.FromBase64String(pem));
-                MessageBox.Show(this,L.T("서버 인증서 SHA-1 지문:\n")+certificate.Thumbprint+L.T("\n\nRDCMan의 인증서 상세 정보와 비교하세요."),L.T("인증서 확인"));
+                MessageBox.Show(this,L.T("서버 인증서 SHA-1 지문:\n")+MonitorFingerprints()+L.T("\n\nRDCMan의 인증서 상세 정보와 비교하세요."),L.T("인증서 확인"));
             }catch(Exception ex){MessageBox.Show(this,L.T("서버를 한 번 시작한 후 확인하세요.\n")+ex.Message);}
         };Controls.Add(cert);
         status.SetBounds(22,337,746,28);status.AutoEllipsis=true;Controls.Add(status);
@@ -80,13 +77,13 @@ public sealed partial class SurfaceDesk : Form {
         Button logs=new Button {Text=L.T("로그 저장"),Location=new Point(350,370),Size=new Size(140,32)};
         logs.Click+=delegate{using(SaveFileDialog d=new SaveFileDialog {Filter=L.T("진단 기록|*.txt"),FileName="WinHomeDesk-log.txt"}){if(d.ShowDialog(this)==DialogResult.OK)File.WriteAllText(d.FileName,status.Text+Environment.NewLine+captureMetrics.Text+Environment.NewLine+sendMetrics.Text+Environment.NewLine+pipelineMetrics.Text+Environment.NewLine+actualEncoder.Text+Environment.NewLine+audioStatus.Text+Environment.NewLine+log.Text,Encoding.UTF8);}};Controls.Add(logs);
         Button groups=new Button {Text=L.T("RDCMan 그룹 관리"),Location=new Point(510,370),Size=new Size(190,32)};
-        groups.Click+=delegate{using(RdgManagerForm manager=new RdgManagerForm(Convert.ToString(addresses.SelectedItem),(int)port.Value)){manager.Icon=Icon;manager.ShowDialog(this);}};Controls.Add(groups);
+        groups.Click+=delegate{OpenMonitorGroups(false);};Controls.Add(groups);
         statusTimer.Interval=1000;statusTimer.Tick+=delegate{UpdateStatus();RefreshPerformance();RefreshTray();};statusTimer.Start();
         FormClosed+=delegate{statusTimer.Dispose();};
         addresses.SelectedIndexChanged+=delegate{UpdateStatus();};port.ValueChanged+=delegate{UpdateStatus();};
         Controls.Add(new Label {Text=L.T("전송 화질"),AutoSize=true,Location=new Point(22,420)});
         quality.DropDownStyle=ComboBoxStyle.DropDownList;quality.SetBounds(112,415,365,30);
-        quality.Items.AddRange(new object[]{L.T("균형 — 긴 변 최대 1920px (기본)"),L.T("속도 우선 — 긴 변 최대 1440px"),L.T("원본 선명도 — 원본 해상도")});
+        quality.Items.AddRange(new object[]{L.T("균형 — 모니터당 최대 1920px (기본)"),L.T("속도 우선 — 모니터당 최대 1440px"),L.T("원본 우선 — 인코더 한도 내")});
         quality.SelectedIndex=0;Controls.Add(quality);
         Controls.Add(new Label {Text=L.T("목표 FPS"),AutoSize=true,Location=new Point(494,420)});
         frameRate.DropDownStyle=ComboBoxStyle.DropDownList;frameRate.SetBounds(580,415,122,30);
@@ -109,6 +106,8 @@ public sealed partial class SurfaceDesk : Form {
         InitializeAudio();
         InitializeEncoder();
         InitializeLifecycle(startup,test);
+        InitializeMonitorSessions();
+        InitializeMonitorSharing();
         InitializeLanguageSelector();
         AddLog(L.T("창의 X는 트레이로 숨김 / 완전 종료는 트레이 메뉴 / 자동 시작은 환경 설정에서 선택하세요."));
     }
@@ -131,7 +130,13 @@ public sealed partial class SurfaceDesk : Form {
         pipelineMetrics.Text=pipelineAge+performance.PipelineText;
     }
     void SetRunning(bool running) {
+        if(!running)runtimeMonitorsConfirmed=false;
+        RefreshMonitorText();
         start.Enabled=!running;stop.Enabled=running;addresses.Enabled=!running;port.Enabled=!running;password.Enabled=!running;quality.Enabled=!running;frameRate.Enabled=!running;captureMode.Enabled=!running;graphicsMode.Enabled=!running;audioEnabled.Enabled=!running;encoderMode.Enabled=!running;
+        monitorScope.Enabled=!running && !monitorBusy;monitorDetails.Enabled=!monitorBusy;
+        graphicsMode.Enabled=!running && !monitorBusy;
+        encoderMode.Enabled=graphicsMode.Enabled;
+        if(monitorBusy){start.Enabled=false;addresses.Enabled=false;port.Enabled=false;password.Enabled=false;quality.Enabled=false;frameRate.Enabled=false;captureMode.Enabled=false;audioEnabled.Enabled=false;consent.Enabled=false;}else consent.Enabled=!running;
     }
     string Endpoint() { return Convert.ToString(addresses.SelectedItem)+":"+port.Value; }
     public static bool IsListeningLine(string line) {
@@ -139,6 +144,9 @@ public sealed partial class SurfaceDesk : Form {
     }
     void EngineOutput(Process source,string line) {
         if(!Object.ReferenceEquals(engine,source))return;
+        if(line.StartsWith("SurfaceDesk MONITOR ",StringComparison.Ordinal)||line.StartsWith("SurfaceDesk CAPTURE ",StringComparison.Ordinal)||line.StartsWith("SurfaceDesk screen:",StringComparison.Ordinal)) {
+            if(!IsDisposed)try{BeginInvoke(new Action(delegate{if(Object.ReferenceEquals(engine,source) && !SeparateMonitors)AcceptRuntimeMonitorLine(line);}));}catch(InvalidOperationException){}
+        }
         if(IsListeningLine(line))listenerReported=true;
         string encoder=EncoderCaption(line);
         if(encoder!=null && !IsDisposed)try{BeginInvoke(new Action(delegate {
@@ -172,63 +180,48 @@ public sealed partial class SurfaceDesk : Form {
             bool running=IsEngineRunning();
             bool listening=listenerReported;
             string prefix=running?(listening?L.T("포트 수신 확인"):L.T("서버 시작 중 / 포트 수신 미확인")):L.T("서버 중지됨");
+            if(SeparateMonitors && activeMonitorPlan!=null)prefix+=" ("+activeMonitorPlan.Count+L.T("개 포트")+")";
             string suffix=Convert.ToString(addresses.SelectedItem)=="127.0.0.1"?L.T(" — 같은 PC 전용"):L.T(" — 다른 PC에서 입력할 주소");
             status.Text=prefix+": "+Endpoint()+suffix;
             status.ForeColor=running&&listening?Color.DarkGreen:Color.DarkRed;
         }catch(Exception ex){status.Text=L.T("상태 확인 실패: ")+ex.Message;}
     }
-    void StartServer(object sender,EventArgs e) {
+    async void StartServer(object sender,EventArgs e) {
+        if(monitorBusy || IsEngineRunning())return;
         startupTimer.Stop();
         if(!consent.Checked){MessageBox.Show(this,L.T("현재 화면 공유 확인란을 선택하세요."));return;}
         if(password.Text.Length<12){MessageBox.Show(this,L.T("접속 암호는 12자 이상으로 설정하세요."));return;}
         string exe=Path.Combine(root,"engine","WinHomeDesk-engine.exe");
         if(!File.Exists(exe)){MessageBox.Show(this,L.T("RDP 엔진이 없습니다. ZIP 전체를 압축 해제하세요."));return;}
         try {
+            bool all=SelectedAllMonitors;int selectedQuality=quality.SelectedIndex;
+            ResetRuntimeMonitors();
+            monitorBusy=true;SetRunning(false);
+            monitorReport=await System.Threading.Tasks.Task.Run(()=>MonitorSharing.Probe(exe,all,selectedQuality,8000));
+            if(IsDisposed || Disposing || exitRequested)return;
+            RefreshMonitorText();AddLog(MonitorCaption());
+            monitorBusy=false;
+            var plan=MonitorConnection.Plan(monitorReport,SeparateMonitors,(int)port.Value,audioEnabled.Checked);
             SaveConnectionPreferences();
             actualCodec.Text=L.T("실제 전송: 연결 대기");
             actualEncoder.Text=L.T("인코더: 연결 대기");
-            AddLog(L.T("전송 방식: ")+graphicsMode.SelectedItem+" / "+encoderMode.SelectedItem+L.T(". 실제 사용 인코더는 접속 후 표시됩니다. AVC444는 CPU를 사용합니다."));
-            string args="/bind-address:"+addresses.SelectedItem+" /port:"+port.Value+" /sec:tls +auth +may-view +may-interact /max-connections:1 /log-level:INFO"+GraphicsMode.Arguments(graphicsMode.SelectedIndex);
-            Process p=new Process(); p.StartInfo=new ProcessStartInfo(exe,args) {UseShellExecute=false,CreateNoWindow=true,WorkingDirectory=root,RedirectStandardOutput=true,RedirectStandardError=true,StandardOutputEncoding=Encoding.UTF8,StandardErrorEncoding=Encoding.UTF8};
-            byte[] salt=new byte[16];using(var rng=RandomNumberGenerator.Create())rng.GetBytes(salt);
-            byte[] hash;using(var derive=new Rfc2898DeriveBytes(password.Text,salt,200000))hash=derive.GetBytes(32);
-            p.StartInfo.EnvironmentVariables["SURFACE_DESK_SALT"]=BitConverter.ToString(salt).Replace("-","");
-            p.StartInfo.EnvironmentVariables["SURFACE_DESK_HASH"]=BitConverter.ToString(hash).Replace("-","");
-            p.StartInfo.EnvironmentVariables["WINHOME_DESK_NT_HASH"]=AppCredentials.NtlmHash(password.Text);
-            Array.Clear(hash,0,hash.Length);
-            p.StartInfo.EnvironmentVariables["SURFACE_DESK_DATA"]=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"SurfaceDesk");
-            p.StartInfo.EnvironmentVariables["OPENSSL_MODULES"]=Path.Combine(root,"engine","ossl-modules");
-            p.StartInfo.EnvironmentVariables["SURFACE_DESK_MAX_EDGE"]=quality.SelectedIndex==1?"1440":quality.SelectedIndex==2?"0":"1920";
-            p.StartInfo.EnvironmentVariables["SURFACE_DESK_GPU"]=encoderMode.SelectedIndex==0?"1":"0";
-            p.StartInfo.EnvironmentVariables["WINHOME_DESK_RALT_HANGUL"]=preferences.RightAltHangul?"1":"0";
-            AddLog(L.T("키보드: 오른쪽 Alt → ")+(preferences.RightAltHangul?L.T("한영 전환"):L.T("원래 키보드 배치")));
-            p.StartInfo.EnvironmentVariables["SURFACE_DESK_AUDIO"]=audioEnabled.Checked?"1":"0";
-            p.StartInfo.EnvironmentVariables["SURFACE_DESK_CAPTURE"]=captureMode.SelectedIndex==1?"gdi":"auto";
-            p.StartInfo.EnvironmentVariables["SURFACE_DESK_FPS"]=frameRate.SelectedIndex==2?"45":frameRate.SelectedIndex==1?"30":"20";
-            p.OutputDataReceived+=delegate(object o,DataReceivedEventArgs a){if(a.Data!=null)EngineOutput(p,a.Data);};
-            p.ErrorDataReceived+=delegate(object o,DataReceivedEventArgs a){if(a.Data!=null)EngineOutput(p,a.Data);};
-            p.EnableRaisingEvents=true;
-            p.Exited+=delegate{AddLog(L.T("RDP 엔진 종료. 잠금·화면 변경 또는 위 오류를 확인하세요."));if(!IsDisposed)try{BeginInvoke(new Action(delegate{if(Object.ReferenceEquals(engine,p)) {
-                SetRunning(false);captureBackend.Text=L.T("캡처 중지");actualCodec.Text=L.T("실제 전송: 서버 중지");actualEncoder.Text=L.T("인코더: 서버 중지");audioStatus.Text=L.T("소리 전송: 중지");
-                if(!exitRequested && !Visible && tray!=null)tray.ShowBalloonTip(4000,"WinHomeDesk",L.T("서버가 중지되었습니다. 트레이에서 창을 열어 로그를 확인하세요."),ToolTipIcon.Warning);
-            }}));}catch(InvalidOperationException){}};
-            if(engine!=null)engine.Dispose();
+            int effectiveGraphics=graphicsMode.SelectedIndex;
+            AddLog(L.T("전송 방식: ")+graphicsMode.Items[effectiveGraphics]+" / "+encoderMode.SelectedItem+L.T(". 실제 사용 인코더는 접속 후 표시됩니다. AVC444는 CPU를 사용합니다."));
             performance=new PerformanceMetrics();RefreshPerformance();
             captureBackend.Text=L.T("캡처 시작 중");audioStatus.Text=audioEnabled.Checked?L.T("소리 캡처 시작 중"):L.T("소리 전송: 꺼짐");
-            listenerReported=false;engine=p;p.Start();
-            p.StartInfo.EnvironmentVariables.Remove("WINHOME_DESK_NT_HASH");
-            p.StartInfo.EnvironmentVariables.Remove("SURFACE_DESK_HASH");
-            SetRunning(true);p.BeginOutputReadLine();p.BeginErrorReadLine();
+            LaunchMonitorSessions(exe,all,selectedQuality,effectiveGraphics,plan);
+            SetRunning(true);
             AddLog(L.T("인증: NLA + TLS 호환. RDCMan 3.22 새 엔진과 기존 엔진에서 surface / 현재 앱 전용 암호를 사용하세요."));
             AddLog(L.T("시작 요청: ")+addresses.SelectedItem+":"+port.Value+L.T(". LISTEN 로그로 실제 시작 여부를 확인하세요."));
             AddLog(L.T("전송 화질: ")+quality.SelectedItem+L.T(" / 목표 ")+frameRate.SelectedItem+L.T(". 실제 속도는 화면 변화량과 네트워크에 따라 달라집니다."));
-        }catch(Exception ex){AddLog(L.T("서버 시작 실패: ")+ex.Message);StopServer();}
+        }catch(Exception ex){if(!IsDisposed){AddLog(L.T("서버 시작 실패: ")+ex.Message);StopServer();}}
+        finally{monitorBusy=false;if(!IsDisposed)SetRunning(IsEngineRunning());}
     }
     void StopServer() {
+        ResetRuntimeMonitors();
         lastAudioLine=null;
         startupTimer.Stop();
-        Process p=engine;engine=null;listenerReported=false;
-        if(p!=null){try{if(!p.HasExited){p.Kill();p.WaitForExit(3000);}}catch(Exception ex){AddLog(ex.Message);}finally{p.Dispose();}}
+        StopMonitorSessions();
         if(!IsDisposed){SetRunning(false);captureBackend.Text=L.T("캡처 중지");actualCodec.Text=L.T("실제 전송: 서버 중지");actualEncoder.Text=L.T("인코더: 서버 중지");audioStatus.Text=L.T("소리 전송: 중지");UpdateStatus();RefreshTray();}
     }
     void SaveConnection(object sender,EventArgs e) {
@@ -237,10 +230,12 @@ public sealed partial class SurfaceDesk : Form {
             MessageBox.Show(this,L.T("현재 주소 127.0.0.1은 이 PC 전용입니다. 다른 PC로 옮겨 사용할 파일은 연결 주소에서 서피스의 내부 IP를 선택한 뒤 저장하세요."));return;
         }
 
+        if(SeparateMonitors){OpenMonitorGroups(true);return;}
         using(SaveFileDialog d=new SaveFileDialog {Filter=L.T("원격 데스크톱 연결|*.rdp"),FileName="WinHomeDesk.rdp"}) {
             if(d.ShowDialog(this)!=DialogResult.OK)return;
             string text="full address:s:"+addresses.SelectedItem+":"+port.Value+"\r\nusername:s:surface\r\ndomain:s:\r\nprompt for credentials:i:1\r\nprompt for credentials on client:i:1\r\nauthentication level:i:2\r\nenablecredsspsupport:i:1\r\nredirectclipboard:i:0\r\n";
             text+="session bpp:i:32\r\naudiomode:i:0\r\naudiocapturemode:i:0\r\n";
+            text+="smart sizing:i:1\r\ndynamic resolution:i:0\r\nuse multimon:i:0\r\n";
             File.WriteAllText(d.FileName,text,Encoding.Unicode);AddLog(L.T("저장: ")+d.FileName);
         }
     }
