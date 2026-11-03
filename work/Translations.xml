@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <translations>
   <text>
-    <ko>WinHomeDesk — 독립 RDP 서버 0.3.3-local · 실험 버전</ko>
-    <en>WinHomeDesk - RDP server 0.3.3-local · Experimental</en>
+    <ko>WinHomeDesk — 독립 RDP 서버 0.3.7-local · 실험 버전</ko>
+    <en>WinHomeDesk - RDP server 0.3.7-local · Experimental</en>
   </text>
   <text>
     <ko>내 서피스 화면을 RDCMan으로 연결</ko>
@@ -1287,4 +1287,6 @@ Allow the assigned TCP ports through your firewall.
 Restart the server after changing the monitor layout.</en>
   </text>
   <text><ko>모니터 RDG 저장</ko><en>Save monitor RDG</en></text>
+  <text><ko>텍스트·파일 복사/붙여넣기 허용 (서버 재시작 후 적용)</ko><en>Allow text/file copy and paste (restart server to apply)</en></text>
+  <text><ko>모니터별 연결에서는 첫 번째 모니터 연결을 유지하세요.</ko><en>Keep the first monitor connected when using separate monitor sessions.</en></text>
 </translations>

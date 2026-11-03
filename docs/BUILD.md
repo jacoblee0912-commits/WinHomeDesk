@@ -1,4 +1,4 @@
-# 빌드와 테스트
+﻿# 빌드와 테스트
 
 **한국어** | [English](BUILD.en.md)
 
@@ -59,3 +59,38 @@ python work/test033.py --compiler <LLVM-MinGW-clang.exe>
 `test032.py`는 임시 루프백 TCP 포트 23730~23731을 사용해 다중 자식 프로세스의 생명주기를 시험합니다. 실제 입력을 주입하지 않습니다. `test033.py`는 실제 화면을 변경하지 않고 숨겨진 테스트 창에 변경 메시지를 보내 중지 처리를 검사합니다. 최신 검증 범위와 남은 장치 시험은 [Windows 안내](WINDOWS_MULTIMONITOR.ko.md)를 참고하세요.
 
 패키징은 `python work/package033.py --base <0.3.0-Windows-x64.zip> --output <빈-폴더>`를 사용합니다. Python `pefile`이 필요하며, 라이선스와 런타임은 기존 ZIP에서 가져오고 FreeRDP/WinPR DLL과 EXE는 현재 빌드 결과로 교체합니다.
+
+
+## 0.3.4 clipboard regression
+
+Build the native engine and GUI first. The clipboard bridge uses C++17 and statically linked LLVM C++ runtime code. Keep `CHANNEL_CLIPRDR_SERVER` enabled.
+
+```powershell
+python work/test034.py --compiler C:/toolchain/bin/x86_64-w64-mingw32-clang++.exe --runtime C:/staged-package/engine
+python work/test032.py --compiler C:/toolchain/bin/x86_64-w64-mingw32-clang.exe
+python work/package034.py --base C:/packages/WinHomeDesk-0.3.0-Windows-x64.zip --output C:/packages/release034
+```
+
+The OS clipboard test requires an isolated window station. If creation is denied, the test reports SKIP and still tests protocol callbacks, IDataObject/IStream, file snapshots, cancellation, the inactive listener lifecycle and GUI settings. It never falls back to changing the user's clipboard. See the CLIPBOARD guide for remaining two-PC validation.
+
+
+## 0.3.5 inbound regression / 수신 회귀 시험
+
+```powershell
+python work/test035.py --compiler C:/toolchain/bin/x86_64-w64-mingw32-clang++.exe --runtime C:/staged-package/engine
+python work/package035.py --base C:/packages/WinHomeDesk-0.3.0-Windows-x64.zip --output C:/packages/release035
+```
+
+`test035.py` tests cached format rendering, Explorer's format-only query, timeout isolation, late-reply draining and incoming publication guards. It also calls the real cliprdr DLL through an in-memory WTS transport to verify wire headers and fragmented responses. It does not touch the user's clipboard or initiate a network connection. 실제 두 PC 전송 재검증과는 별도입니다.
+
+File size-query regression (no OS clipboard changes):
+
+```powershell
+python work/test036.py --compiler <clang++.exe> --runtime <packaged-engine-directory>
+```
+
+Clipboard file locking and COM wait regression (no OS clipboard changes):
+
+```powershell
+python work/test037.py --compiler <clang++.exe> --runtime <packaged-engine-directory>
+```

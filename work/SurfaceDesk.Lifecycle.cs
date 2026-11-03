@@ -92,7 +92,7 @@ public sealed partial class SurfaceDesk {
     DesktopOptions CurrentOptions(bool autoServer) {
         var result=new DesktopOptions {Host=Convert.ToString(addresses.SelectedItem),Port=(int)port.Value,
             Quality=quality.SelectedIndex,FrameRate=frameRate.SelectedIndex,GraphicsMode=graphicsMode.SelectedIndex,AudioEnabled=audioEnabled.Checked,EncoderMode=encoderMode.SelectedIndex==0?"auto":"cpu",
-            MonitorScope=preferences.MonitorScope,Language=L.Language,StartupElevated=preferences.StartupElevated,RightAltHangul=preferences.RightAltHangul,RdcManPath=preferences.RdcManPath,CaptureMode=captureMode.SelectedIndex==1?"gdi":"auto",StartServerAtLogin=autoServer};
+            MonitorScope=preferences.MonitorScope,Language=L.Language,StartupElevated=preferences.StartupElevated,ClipboardEnabled=preferences.ClipboardEnabled,RightAltHangul=preferences.RightAltHangul,RdcManPath=preferences.RdcManPath,CaptureMode=captureMode.SelectedIndex==1?"gdi":"auto",StartServerAtLogin=autoServer};
         if(autoServer) {
             if(!consent.Checked)throw new InvalidOperationException(L.T("먼저 현재 화면 공유 확인란을 선택하세요."));
             if(password.Text.Length<12)throw new InvalidOperationException(L.T("전용 암호를 12자 이상 입력하세요."));
@@ -135,7 +135,7 @@ public sealed partial class SurfaceDesk {
     Form CreateOptionsDialog(IStartupRegistration registration) {
         string startupCommand=registration.Read();
         bool loginEnabled=startupCommand!=null;
-        var dialog=new Form {Text=L.T("WinHomeDesk — 환경 설정"),Icon=Icon,ClientSize=new Size(590,515),Font=Font,
+        var dialog=new Form {Text=L.T("WinHomeDesk — 환경 설정"),Icon=Icon,ClientSize=new Size(590,585),Font=Font,
             FormBorderStyle=FormBorderStyle.FixedDialog,MaximizeBox=false,MinimizeBox=false,StartPosition=FormStartPosition.CenterParent};
             dialog.Controls.Add(new Label {Text=L.T("창의 X 버튼은 트레이로 숨깁니다. 완전 종료는 트레이 메뉴에서 합니다."),AutoSize=true,Location=new Point(18,18)});
             var login=new CheckBox {Name="LoginStartup",Text=L.T("Windows 로그인 시 트레이에서 자동 실행"),AutoSize=true,Location=new Point(20,61)};
@@ -159,11 +159,14 @@ public sealed partial class SurfaceDesk {
             dialog.Controls.Add(chooseClient);
             var clientLog=new Button {Text=L.T("한글 보정 로그 열기"),Location=new Point(20,422),Size=new Size(190,32)};
             clientLog.Click+=delegate{OpenClientLog();};dialog.Controls.Add(clientLog);
-            var save=new Button {Text=L.T("설정 저장"),Location=new Point(340,470),Size=new Size(110,32)};
-            var cancel=new Button {Text=L.T("취소"),DialogResult=DialogResult.Cancel,Location=new Point(462,470),Size=new Size(110,32)};
+            var clipboard=new CheckBox {Name="ClipboardEnabled",Text=L.T("텍스트·파일 복사/붙여넣기 허용 (서버 재시작 후 적용)"),Checked=preferences.ClipboardEnabled,AutoSize=true,Location=new Point(20,465)};
+            dialog.Controls.Add(clipboard);
+            dialog.Controls.Add(new Label {Text=L.T("모니터별 연결에서는 첫 번째 모니터 연결을 유지하세요."),Location=new Point(20,497),Size=new Size(550,30)});
+            var save=new Button {Text=L.T("설정 저장"),Location=new Point(340,540),Size=new Size(110,32)};
+            var cancel=new Button {Text=L.T("취소"),DialogResult=DialogResult.Cancel,Location=new Point(462,540),Size=new Size(110,32)};
             save.Click+=delegate {
                 try {
-                    var next=CurrentOptions(server.Checked);next.StartupElevated=login.Checked&&admin.Checked;next.RightAltHangul=rightAlt.Checked;next.RdcManPath=clientPath;
+                    var next=CurrentOptions(server.Checked);next.StartupElevated=login.Checked&&admin.Checked;next.RightAltHangul=rightAlt.Checked;next.ClipboardEnabled=clipboard.Checked;next.RdcManPath=clientPath;
                     DesktopOptionsCommit.Save(preferenceStore,registration,next,login.Checked,Application.ExecutablePath);
                     preferences=next;AddLog(L.T("자동 시작 권한: ")+(next.StartupElevated?L.T("관리자 (다음 로그인부터)"):L.T("일반"))+L.T(" / 현재 권한: ")+(StartupTask.IsElevated?L.T("관리자"):L.T("일반")));if(!next.StartServerAtLogin)startupTimer.Stop();AddLog(L.T("환경 설정 저장: 로그인 자동 실행 ")+(login.Checked?L.T("켜짐"):L.T("꺼짐"))+L.T(", 서버 자동 시작 ")+(server.Checked?L.T("켜짐"):L.T("꺼짐")));
                     AddLog(L.T("오른쪽 Alt 한영 변환: ")+(next.RightAltHangul?L.T("켜짐"):L.T("꺼짐"))+L.T(" — 서버 재시작 후 적용"));

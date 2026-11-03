@@ -1,4 +1,4 @@
-# Build and test
+﻿# Build and test
 
 [한국어](BUILD.md) | **English**
 
@@ -32,3 +32,38 @@ python work/test033.py --compiler <LLVM-MinGW-clang.exe>
 Test032 uses temporary loopback ports 23730–23731 to test child-process lifecycle. It does not inject user input. Test033 sends display-change messages only to its hidden test window and does not reconfigure real displays. See the [Windows guide](WINDOWS_MULTIMONITOR.en.md) for validation limits.
 
 Package with `python work/package033.py --base <0.3.0-Windows-x64.zip> --output <empty-directory>`. Python `pefile` is required. The base ZIP supplies licenses and runtimes; current builds replace the engine EXE and FreeRDP/WinPR DLLs.
+
+
+## 0.3.4 clipboard regression
+
+Build the native engine and GUI first. The clipboard bridge uses C++17 and statically linked LLVM C++ runtime code. Keep `CHANNEL_CLIPRDR_SERVER` enabled.
+
+```powershell
+python work/test034.py --compiler C:/toolchain/bin/x86_64-w64-mingw32-clang++.exe --runtime C:/staged-package/engine
+python work/test032.py --compiler C:/toolchain/bin/x86_64-w64-mingw32-clang.exe
+python work/package034.py --base C:/packages/WinHomeDesk-0.3.0-Windows-x64.zip --output C:/packages/release034
+```
+
+The OS clipboard test requires an isolated window station. If creation is denied, the test reports SKIP and still tests protocol callbacks, IDataObject/IStream, file snapshots, cancellation, the inactive listener lifecycle and GUI settings. It never falls back to changing the user's clipboard. See the CLIPBOARD guide for remaining two-PC validation.
+
+
+## 0.3.5 inbound regression / 수신 회귀 시험
+
+```powershell
+python work/test035.py --compiler C:/toolchain/bin/x86_64-w64-mingw32-clang++.exe --runtime C:/staged-package/engine
+python work/package035.py --base C:/packages/WinHomeDesk-0.3.0-Windows-x64.zip --output C:/packages/release035
+```
+
+`test035.py` tests cached format rendering, Explorer's format-only query, timeout isolation, late-reply draining and incoming publication guards. It also calls the real cliprdr DLL through an in-memory WTS transport to verify wire headers and fragmented responses. It does not touch the user's clipboard or initiate a network connection. 실제 두 PC 전송 재검증과는 별도입니다.
+
+File size-query regression (no OS clipboard changes):
+
+```powershell
+python work/test036.py --compiler <clang++.exe> --runtime <packaged-engine-directory>
+```
+
+Clipboard file locking and COM wait regression (no OS clipboard changes):
+
+```powershell
+python work/test037.py --compiler <clang++.exe> --runtime <packaged-engine-directory>
+```

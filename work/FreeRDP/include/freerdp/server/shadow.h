@@ -143,6 +143,7 @@ extern "C"
 		RDPGFX_CAPSET confirmedCaps; /** @since version 3.25.0 */
         LONG surfaceAudioReady;
         void* surfaceAudioTiming;
+        void* surfaceClipboard;
         void* surfaceEncodeWorker;
         BOOL surfaceEncodeBusy,surfaceEncodeResetPending;
         UINT64 surfaceInputCount,surfaceInputDuringEncode,surfaceInputReport;

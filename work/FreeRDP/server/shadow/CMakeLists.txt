@@ -64,6 +64,11 @@ if(WITH_RDTK)
   endif()
 endif()
 
+if(WIN32)
+  list(APPEND SRCS shadow_clipboard.cpp)
+  list(APPEND LIBS ole32 shell32 uuid user32)
+endif()
+
 addtargetwithresourcefile(${MODULE_NAME} "FALSE" "${FREERDP_VERSION}" SRCS)
 
 if(WITH_RDTK)
@@ -79,6 +84,10 @@ endif()
 
 target_include_directories(${MODULE_NAME} INTERFACE $<INSTALL_INTERFACE:include/freerdp${FREERDP_VERSION_MAJOR}>)
 target_link_libraries(${MODULE_NAME} PRIVATE ${LIBS})
+if(WIN32 AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+  target_compile_features(${MODULE_NAME} PRIVATE cxx_std_17)
+  target_link_options(${MODULE_NAME} PRIVATE -static-libstdc++ -static-libgcc)
+endif()
 
 installwithrpath(
   TARGETS

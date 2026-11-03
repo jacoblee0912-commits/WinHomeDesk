@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
@@ -23,6 +23,7 @@ class TestSeparateMonitors032 {
    var device=Environment.GetEnvironmentVariable("WINHOME_DESK_MONITOR_DEVICE");
    if(device!="DISPLAY1" && device!="DISPLAY3")return 3;
    if(Environment.GetEnvironmentVariable("SURFACE_DESK_AUDIO")!=(device=="DISPLAY1"?"1":"0"))return 4;
+   if(Environment.GetEnvironmentVariable("WINHOME_DESK_CLIPBOARD")!=(device=="DISPLAY1"?"1":"0"))return 8;
    if(!Environment.GetEnvironmentVariable("SURFACE_DESK_DATA").EndsWith("port-"+port))return 5;
    try {
     var listener=new TcpListener(IPAddress.Loopback,port);listener.Start();

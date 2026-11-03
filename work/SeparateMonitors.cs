@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -97,6 +97,8 @@ public sealed partial class SurfaceDesk {
             env["SURFACE_DESK_GPU"]=encoderMode.SelectedIndex==0?"1":"0";
             env["WINHOME_DESK_RALT_HANGUL"]=preferences.RightAltHangul?"1":"0";
             env["SURFACE_DESK_AUDIO"]=connection.Audio?"1":"0";
+            // One clipboard owner per desktop prevents feedback between monitor sessions.
+            env["WINHOME_DESK_CLIPBOARD"]=(preferences.ClipboardEnabled && Object.ReferenceEquals(connection,plan[0]))?"1":"0";
             env["SURFACE_DESK_CAPTURE"]=captureMode.SelectedIndex==1?"gdi":"auto";
             env["SURFACE_DESK_FPS"]=frameRate.SelectedIndex==2?"45":frameRate.SelectedIndex==1?"30":"20";
             p.OutputDataReceived+=delegate(object o,DataReceivedEventArgs e){QueueMonitorOutput(session,e.Data);};

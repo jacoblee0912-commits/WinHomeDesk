@@ -11,6 +11,7 @@ public sealed class DesktopOptions {
     public string Host="", CaptureMode="auto", EncoderMode="auto", EncryptedPassword="";
     public bool StartServerAtLogin=false, AudioEnabled=true;
     public bool RightAltHangul=true;
+    public bool ClipboardEnabled=true;
     public bool StartupElevated=false;
     public string Language="ko";
     public string MonitorScope="legacy";

@@ -1,10 +1,12 @@
 # WinHomeDesk
 
-Current source **0.3.3-local** includes Windows multi-monitor H.264, separate monitor connections, and settings/cursor fixes. [English usage and validation](docs/WINDOWS_MULTIMONITOR.en.md) · [한국어](docs/WINDOWS_MULTIMONITOR.ko.md). Existing GitHub Releases binaries remain at 0.3.0, separate from this source update.
+Current source **0.3.7-local** adds bidirectional Unicode text and file/folder clipboard transfer. [Usage and verification limits](docs/CLIPBOARD.en.md). A user confirmed successful text and file transfer with RDCMan 2.93 on 0.3.7. This is a user-reported result, not a full client compatibility certification.
+
+Previous source **0.3.3-local** includes Windows multi-monitor H.264, separate monitor connections, and settings/cursor fixes. [English usage and validation](docs/WINDOWS_MULTIMONITOR.en.md) · [한국어](docs/WINDOWS_MULTIMONITOR.ko.md). Check the version on [GitHub Releases](https://github.com/jacoblee0912-commits/WinHomeDesk/releases) before downloading binaries.
 
 [한국어](README.md) | **English**
 
-WinHomeDesk is an experimental, standalone FreeRDP-based server for sharing the currently signed-in Windows desktop. It targets **Windows 11 Home x64**, including Surface Pro 8 and x64 Surface Pro 9 devices. The current source version is **0.3.3-local**.
+WinHomeDesk is an experimental, standalone FreeRDP-based server for sharing the currently signed-in Windows desktop. It targets **Windows 11 Home x64**, including Surface Pro 8 and x64 Surface Pro 9 devices. The current source version is **0.3.7-local**.
 
 It does not use RDPWrap or patch Windows Remote Desktop Services. It shares an existing desktop; it does not create separate Windows user sessions. Access before sign-in, the lock screen, UAC secure desktop and sleeping PCs is not supported.
 

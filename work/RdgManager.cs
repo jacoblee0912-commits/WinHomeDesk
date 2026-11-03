@@ -83,7 +83,7 @@ public static class SurfaceRdg {
             Element(resources,"audioRedirection","Client");
             Element(resources,"audioRedirectionQuality","High");
             Element(resources,"audioCaptureRedirection","DoNotRecord");
-            Element(resources,"redirectClipboard","False");
+            Element(resources,"redirectClipboard","True");
         }
         Element(root,"connected",null);Element(root,"favorites",null);Element(root,"recentlyUsed",null);
         return doc;

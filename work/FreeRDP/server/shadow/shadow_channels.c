@@ -22,6 +22,11 @@
 
 #include "shadow_channels.h"
 
+#ifdef _WIN32
+extern BOOL whd_clipboard_start(rdpShadowClient* client);
+extern void whd_clipboard_stop(rdpShadowClient* client);
+#endif
+
 UINT shadow_client_channels_post_connect(rdpShadowClient* client)
 {
 	if (WTSVirtualChannelManagerIsChannelJoined(client->vcm, ENCOMSP_SVC_CHANNEL_NAME))
@@ -58,11 +63,18 @@ UINT shadow_client_channels_post_connect(rdpShadowClient* client)
 	if (shadow_client_rdpgfx_init(client) < 0)
 		return ERROR_NOT_READY;
 
+
+#ifdef _WIN32
+    if (!whd_clipboard_start(client)) { fprintf(stderr,"WinHomeDesk CLIPBOARD init-error\n"); }
+#endif
 	return CHANNEL_RC_OK;
 }
 
 void shadow_client_channels_free(rdpShadowClient* client)
 {
+#ifdef _WIN32
+    whd_clipboard_stop(client);
+#endif
 	shadow_client_rdpgfx_uninit(client);
 	shadow_client_audin_uninit(client);
 	shadow_client_rdpsnd_uninit(client);

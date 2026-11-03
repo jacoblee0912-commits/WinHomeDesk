@@ -78,7 +78,7 @@ public sealed partial class SurfaceDesk {
         L.Set(code);changingLanguage=true;languageSelector.SelectedIndex=code=="en"?1:0;changingLanguage=false;
         changingMonitorScope=true;
         try{L.ApplyStatic(this);}finally{changingMonitorScope=false;}
-        Text=L.T("WinHomeDesk — 독립 RDP 서버 0.3.3-local · 실험 버전")+(StartupTask.IsElevated?L.T(" · 관리자 권한"):L.T(" · 일반 권한"));
+        Text=L.T("WinHomeDesk — 독립 RDP 서버 0.3.7-local · 실험 버전")+(StartupTask.IsElevated?L.T(" · 관리자 권한"):L.T(" · 일반 권한"));
         performance.Relocalize();RefreshPerformance();UpdateStatus();
         RefreshMonitorText();
         if(lastAudioLine!=null)audioStatus.Text=AudioCaption(lastAudioLine);

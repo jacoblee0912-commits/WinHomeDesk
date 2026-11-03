@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 [assembly: System.Reflection.AssemblyTitle("WinHomeDesk")]
 [assembly: System.Reflection.AssemblyProduct("WinHomeDesk")]
-[assembly: System.Reflection.AssemblyVersion("0.3.3.0")]
+[assembly: System.Reflection.AssemblyVersion("0.3.7.0")]
 public sealed partial class SurfaceDesk : Form {
     readonly TextBox password = new TextBox();
     readonly ComboBox addresses = new ComboBox();
@@ -32,7 +32,7 @@ public sealed partial class SurfaceDesk : Form {
     string root = AppDomain.CurrentDomain.BaseDirectory;
     public SurfaceDesk() : this(false,false) {}
     public SurfaceDesk(bool startup,bool test) {
-        Text=L.T("WinHomeDesk — 독립 RDP 서버 0.3.3-local · 실험 버전");
+        Text=L.T("WinHomeDesk — 독립 RDP 서버 0.3.7-local · 실험 버전");
         ClientSize=new Size(790,980); MinimumSize=Size; Font=new Font("맑은 고딕",10);
         StartPosition=FormStartPosition.CenterScreen;
         Label heading=new Label {Text=L.T("내 서피스 화면을 RDCMan으로 연결"),Font=new Font(Font,FontStyle.Bold),AutoSize=true,Location=new Point(22,20)};
@@ -233,7 +233,7 @@ public sealed partial class SurfaceDesk : Form {
         if(SeparateMonitors){OpenMonitorGroups(true);return;}
         using(SaveFileDialog d=new SaveFileDialog {Filter=L.T("원격 데스크톱 연결|*.rdp"),FileName="WinHomeDesk.rdp"}) {
             if(d.ShowDialog(this)!=DialogResult.OK)return;
-            string text="full address:s:"+addresses.SelectedItem+":"+port.Value+"\r\nusername:s:surface\r\ndomain:s:\r\nprompt for credentials:i:1\r\nprompt for credentials on client:i:1\r\nauthentication level:i:2\r\nenablecredsspsupport:i:1\r\nredirectclipboard:i:0\r\n";
+            string text="full address:s:"+addresses.SelectedItem+":"+port.Value+"\r\nusername:s:surface\r\ndomain:s:\r\nprompt for credentials:i:1\r\nprompt for credentials on client:i:1\r\nauthentication level:i:2\r\nenablecredsspsupport:i:1\r\nredirectclipboard:i:1\r\n";
             text+="session bpp:i:32\r\naudiomode:i:0\r\naudiocapturemode:i:0\r\n";
             text+="smart sizing:i:1\r\ndynamic resolution:i:0\r\nuse multimon:i:0\r\n";
             File.WriteAllText(d.FileName,text,Encoding.Unicode);AddLog(L.T("저장: ")+d.FileName);
@@ -255,7 +255,7 @@ public sealed partial class SurfaceDesk : Form {
             }return;
         }
         if(args.Length==2 && args[0]=="--preview-rdg") {
-            using(RdgManagerForm f=new RdgManagerForm("192.168.0.110",3390)) {
+            using(RdgManagerForm f=new RdgManagerForm("192.0.2.10",3390)) {
                 f.Show();Application.DoEvents();using(Bitmap bitmap=new Bitmap(f.Width,f.Height)){f.DrawToBitmap(bitmap,new Rectangle(Point.Empty,f.Size));bitmap.Save(args[1]);}f.Close();
             }return;
         }

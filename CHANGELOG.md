@@ -1,6 +1,34 @@
-# 개발 이력
+﻿# 개발 이력
 
 배포 안내와 현재 소스를 기준으로 정리한 이력입니다. 이전 대화 전체나 개인 로그를 공개하지 않으며, 과거 커밋을 인위적으로 재현하지 않습니다.
+
+## 0.3.7-local (2026-11-03)
+
+- Lock incoming file selections when negotiated, tag size/range requests, and unlock after OLE object/stream release; preserve legacy untagged requests.
+- Service COM apartment calls while awaiting clipboard responses; retain bounded waits, cancellation and single-request serialization.
+- Log unmatched file replies; test real cross-apartment COM waits and DLL lock/tagged-read/unlock packets. User confirmed successful text/file transfer with RDCMan 2.93 after the 0.3.7 update.
+
+## 0.3.6-local (unpublished)
+
+- Receive files with optional descriptor sizes using FILECONTENTS_SIZE; honor FD_ATTRIBUTES and permit empty directory streams.
+- Add file request/read failure diagnostics without logging names or contents.
+- Add size-query and stream regression tests plus real cliprdr DLL wire checks. Actual client-to-server Explorer retesting remains required.
+
+## 0.3.5-local (Windows, unpublished)
+- 수신 텍스트/파일 목록 선검증 및 OLE 콜백의 네트워크 대기 제거
+- 최초 클립보드 경합 및 수신 게시 중 재전송 방지, 새 로컬 복사 보존
+- 파일 조각 시간 초과가 다른 수신을 영구 차단하지 않도록 수정
+- 늦은 형식 응답 분리, Explorer FileContents 형식 조회 호환, 수신 진단 추가
+- DLL 실제 패킷 생성/분할 응답 처리와 시간 초과/캐시/경합 회귀 시험 추가
+
+## 0.3.4-local (Windows, unpublished)
+- 인증된 RDP 세션의 cliprdr 채널에 Unicode 텍스트 및 파일·폴더 복사 구현
+- 전용 STA/OLE 스레드, IDataObject/IStream 부분 읽기, 복사 전용 동작
+- 파일 목록 잠금·경로 검증·메모리 한도·시간 초과·진행 중 요청 취소
+- 환경 설정 클립보드 사용 옵션, 새 RDP/RDG 클립보드 기본 활성화
+- 모니터별 연결에서는 첫 번째 연결이 클립보드 공유 담당
+- 프로토콜/COM 및 회귀 시험 통과. 두 PC의 실제 RDCMan 붙여넣기는 미검증
+- [한국어 안내](docs/CLIPBOARD.ko.md) / [English](docs/CLIPBOARD.en.md)
 
 ## 0.3.3-local (Windows source snapshot, 2026-11-03)
 - 환경 설정에서 예약 작업 없음(0x80070002)의 FileNotFoundException 매핑 처리
