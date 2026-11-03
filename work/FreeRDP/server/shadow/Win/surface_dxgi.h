@@ -6,6 +6,8 @@
 typedef struct SurfaceDxgi SurfaceDxgi;
 SurfaceDxgi* surface_dxgi_create(int sourceWidth, int sourceHeight, int width, int height,
                                  HRESULT* error);
+SurfaceDxgi* surface_dxgi_create_monitor(HMONITOR monitor, int sourceWidth, int sourceHeight,
+                                        int width, int height, HRESULT* error);
 /* 1 = new image, 0 = unchanged, -1 = failure. Always releases acquired frames. */
 int surface_dxgi_capture(SurfaceDxgi* capture, BYTE* pixels, size_t stride, HRESULT* error);
 void surface_dxgi_free(SurfaceDxgi* capture);

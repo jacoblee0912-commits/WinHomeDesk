@@ -2,7 +2,9 @@
 
 **한국어** | [English](README.en.md)
 
-Windows 11 Home x64에서 현재 로그인한 데스크톱을 공유하는 FreeRDP 기반 독립 RDP 서버입니다. SurfaceDesk라는 이름으로 시작했으며 현재 버전은 **0.3.0**입니다.
+Windows 11 Home x64에서 현재 로그인한 데스크톱을 공유하는 FreeRDP 기반 독립 RDP 서버입니다. SurfaceDesk라는 이름으로 시작했으며 기존 Windows GUI 릴리스는 **0.3.0**입니다.
+
+현재 개발 소스 **0.7.0-local**에는 macOS 27 / Apple Silicon 서버·클라이언트, 시스템 소리·영상 설정, Windows 서버의 전체 모니터 캡처와 Mac의 모니터별 창이 포함됩니다. [빌드·사용 안내](macos/README.md), [검증 결과와 제약](macos/VALIDATION.md), [Windows 후속 개발 지침](docs/WINDOWS_MULTIMONITOR_DEVELOPMENT.md)을 참고하세요. 이 개발 소스에 대한 바이너리 릴리스는 게시하지 않았습니다.
 
 > 개발 중인 실험 버전입니다. 로그인 전·잠금 화면·UAC 보안 화면·절전 상태 접속은 지원하지 않습니다. Windows 내장 RDP와 별도의 구현이며 독립 Windows 사용자 세션을 생성하지 않습니다.
 
@@ -39,6 +41,8 @@ RDPWrap이나 Windows 원격 데스크톱 서비스 패치를 사용하지 않�
 
 ## 문서
 
+- [macOS 27 / M4 Pro 서버·클라이언트 로컬 개발판](macos/README.md) · [실제 검증 범위](macos/VALIDATION.md)
+- [Windows 멀티 모니터 개발 이어가기 지침](docs/WINDOWS_MULTIMONITOR_DEVELOPMENT.md)
 - [최신 한국어 사용 안내](docs/GUIDE.ko.md)
 - [English installation and usage guide](docs/GUIDE.en.md)
 - [설치·사용 설명서 PDF (0.2.8 기준)](docs/WinHomeDesk-0.2.8-설치-사용설명서.pdf) - 관리자 자동 실행은 위의 최신 안내를 우선합니다.

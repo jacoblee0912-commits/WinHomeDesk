@@ -27,6 +27,9 @@ if(POLICY CMP0177)
   cmake_policy(SET CMP0177 NEW)
 endif()
 project(FreeRDP LANGUAGES C CXX)
+if(APPLE AND NOT IOS)
+  enable_language(OBJC)
+endif()
 add_compile_definitions(__STDC_NO_THREADS__=1)
 set(PROJECT_ISSUE_URL https://github.com/FreeRDP/FreeRDP/issues)
 
@@ -624,6 +627,7 @@ showcmakevars("^FREERDP_ADDIN_PATH|^FREERDP_EXTENSION_PATH|^FREERDP_PROXY_PLUGIN
 warn_experimental_print()
 warn_unmaintained_print()
 
+if(WIN32)
 add_executable(surface-probe ../probe.c)
 target_link_libraries(surface-probe PRIVATE freerdp-client freerdp winpr ws2_32)
 add_executable(surface-codec-probe ../test_h264020.c)
@@ -655,3 +659,4 @@ target_link_libraries(surface-keyboard-probe PRIVATE freerdp winpr user32)
 
 add_executable(surface-ralt-probe ../test_keyboard025.c)
 target_link_libraries(surface-ralt-probe PRIVATE freerdp winpr user32)
+endif()

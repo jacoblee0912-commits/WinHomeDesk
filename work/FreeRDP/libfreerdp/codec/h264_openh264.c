@@ -33,7 +33,28 @@
 #include <wels/codec_ver.h>
 
 #include "h264.h"
+#if defined(_WIN32)
 #include "surface_mf.h"
+#define SurfaceGPU SurfaceMF
+#define surface_gpu_new surface_mf_new
+#define surface_gpu_encode surface_mf_encode
+#define surface_gpu_free surface_mf_free
+#define SURFACE_GPU_API "media-foundation"
+#elif defined(__APPLE__) && defined(WITH_APPLE_VIDEOTOOLBOX)
+#include "surface_vt.h"
+#define SurfaceGPU SurfaceVT
+#define surface_gpu_new surface_vt_new
+#define surface_gpu_encode surface_vt_encode
+#define surface_gpu_free surface_vt_free
+#define SURFACE_GPU_API "videotoolbox"
+#else
+/* This optional desktop GPU path is implemented only on Windows and macOS. */
+typedef void SurfaceGPU;
+static SurfaceGPU* surface_gpu_new(UINT32 w, UINT32 h, UINT32 f, UINT32 b, LONG* e) { *e=-1; return NULL; }
+static int surface_gpu_encode(SurfaceGPU* s, const BYTE* const p[3], const UINT32 st[3], BYTE** d, UINT32* n, LONG* e) { *e=-1; return -1; }
+static void surface_gpu_free(SurfaceGPU* s) { }
+#define SURFACE_GPU_API "unavailable"
+#endif
 #include <winpr/sysinfo.h>
 #include <stdio.h>
 
@@ -59,7 +80,7 @@ typedef struct
 	ISVCDecoder* pDecoder;
 	ISVCEncoder* pEncoder;
 	SEncParamExt EncParamExt;
-    SurfaceMF* gpu;BOOL gpuAttempted,gpuReported;
+    SurfaceGPU* gpu;BOOL gpuAttempted,gpuReported;
 } H264_CONTEXT_OPENH264;
 
 #if defined(WITH_OPENH264_LOADING)
@@ -224,21 +245,27 @@ static int openh264_compress(H264_CONTEXT* WINPR_RESTRICT h264,
 	    (h264->BitRate > INT_MAX) || (h264->QP > INT_MAX))
 		return -1;
 
+    h264->surfaceFullFrame=FALSE;
     const char* gpuSetting=getenv("SURFACE_DESK_GPU");
     if(!h264->surfaceAvc444 && gpuSetting && strcmp(gpuSetting,"1")==0) {
-        HRESULT hr=S_OK;
+        LONG hr=0;
         if(!sys->gpuAttempted) {
             sys->gpuAttempted=TRUE;
-            sys->gpu=surface_mf_new(h264->width,h264->height,h264->FrameRate,h264->BitRate,&hr);
+            sys->gpu=surface_gpu_new(h264->width,h264->height,h264->FrameRate,h264->BitRate,&hr);
             if(!sys->gpu){fprintf(stderr,"SurfaceDesk ENCODER backend=cpu reason=gpu-init-failed hr=0x%08lx\n",(unsigned long)hr);fflush(stderr);}
         }
         if(sys->gpu) {
-            int result=surface_mf_encode(sys->gpu,pYUVData,iStride,ppDstData,pDstSize,&hr);
+            int result=surface_gpu_encode(sys->gpu,pYUVData,iStride,ppDstData,pDstSize,&hr);
             if(result>0) {
-                if(!sys->gpuReported){fprintf(stderr,"SurfaceDesk ENCODER backend=gpu api=media-foundation codec=avc420 hardware_only=1\n");fflush(stderr);sys->gpuReported=TRUE;}
+#if defined(__APPLE__) && defined(WITH_APPLE_VIDEOTOOLBOX)
+                /* VT's inter prediction and periodic IDR refresh operate on
+                 * the full image, independently of the source dirty tiles. */
+                h264->surfaceFullFrame=TRUE;
+#endif
+                if(!sys->gpuReported){fprintf(stderr,"SurfaceDesk ENCODER backend=gpu api=" SURFACE_GPU_API " codec=avc420 hardware_only=1\n");fflush(stderr);sys->gpuReported=TRUE;}
                 return result;
             }
-            surface_mf_free(sys->gpu);sys->gpu=NULL;
+            surface_gpu_free(sys->gpu);sys->gpu=NULL;
             fprintf(stderr,"SurfaceDesk ENCODER backend=cpu reason=gpu-encode-failed hr=0x%08lx\n",(unsigned long)hr);fflush(stderr);
         }
     }
@@ -472,7 +499,7 @@ static void openh264_uninit(H264_CONTEXT* h264)
 		for (UINT32 x = 0; x < h264->numSystemData; x++)
 		{
 			H264_CONTEXT_OPENH264* sys = &sysContexts[x];
-            surface_mf_free(sys->gpu);sys->gpu=NULL;
+            surface_gpu_free(sys->gpu);sys->gpu=NULL;
 
 			if (sys->pDecoder)
 			{

@@ -18,6 +18,51 @@
 #include "surface_pacer.h"
 #include "surface_keyboard.h"
 #include "../surface_perf.h"
+#include "../surface_monitors.h"
+
+typedef struct { unsigned count; WhdMonitor raw[16]; HMONITOR handles[16]; BOOL overflow; } MonitorInventory;
+static BOOL CALLBACK collect_monitor(HMONITOR handle,HDC dc,LPRECT rect,LPARAM context) {
+    MonitorInventory* list=(MonitorInventory*)context;
+    MONITORINFOEXW info={0};info.cbSize=sizeof(info);
+    if(!GetMonitorInfoW(handle,(MONITORINFO*)&info))return FALSE;
+    if(list->count==16){list->overflow=TRUE;return FALSE;}
+    unsigned i=list->count++;WhdMonitor* m=&list->raw[i];
+    m->left=info.rcMonitor.left;m->top=info.rcMonitor.top;m->right=info.rcMonitor.right;m->bottom=info.rcMonitor.bottom;
+    m->primary=(info.dwFlags&MONITORINFOF_PRIMARY)!=0;
+    const WCHAR* suffix=info.szDevice+wcslen(info.szDevice);
+    while(suffix>info.szDevice && suffix[-1]>=L'0' && suffix[-1]<=L'9')suffix--;
+    m->id=_wtoi(suffix);list->handles[i]=handle;return TRUE;
+}
+static BOOL read_monitors(BOOL all,MonitorInventory* list,WhdMonitorLayout* layout) {
+    memset(list,0,sizeof(*list));
+    if(!EnumDisplayMonitors(NULL,NULL,collect_monitor,(LPARAM)list) || list->overflow || !list->count)return FALSE;
+    for(unsigned i=0;i<list->count;i++)for(unsigned j=i+1;j<list->count;j++)if(list->raw[j].id<list->raw[i].id) {
+        WhdMonitor m=list->raw[i];list->raw[i]=list->raw[j];list->raw[j]=m;
+        HMONITOR h=list->handles[i];list->handles[i]=list->handles[j];list->handles[j]=h;
+    }
+    if(!all)for(unsigned i=0;i<list->count;i++)if(list->raw[i].primary){list->raw[0]=list->raw[i];list->handles[0]=list->handles[i];list->count=1;break;}
+    const char* edge=getenv("SURFACE_DESK_MAX_EDGE");
+    return whd_monitor_layout(list->raw,list->count,edge?atoi(edge):1920,layout);
+}
+static BOOL all_monitors(void) {
+    const char* v=getenv("SURFACE_DESK_ALL_MONITORS");if(v)return !strcmp(v,"1");
+    /* Optional package-local switch; old installations remain primary-only.
+     * No registry, global environment or Windows display settings are changed. */
+    WCHAR path[32768];DWORD n=GetModuleFileNameW(NULL,path,ARRAYSIZE(path));
+    if(!n || n>=ARRAYSIZE(path))return FALSE;
+    WCHAR* slash=wcsrchr(path,L'\\');if(!slash || slash-path+32>=ARRAYSIZE(path))return FALSE;
+    wcscpy(slash+1,L"WinHomeDesk-all-monitors.flag");
+    DWORD attributes=GetFileAttributesW(path);
+    return attributes!=INVALID_FILE_ATTRIBUTES && !(attributes&FILE_ATTRIBUTE_DIRECTORY);
+}
+static void monitor_defs(const WhdMonitorLayout* l,MONITOR_DEF* out) {
+    int px=0,py=0;for(unsigned i=0;i<l->count;i++)if(l->pixels[i].primary){px=l->pixels[i].left;py=l->pixels[i].top;}
+    for(unsigned i=0;i<l->count;i++) {
+        const WhdMonitor* m=&l->pixels[i];
+        out[i].left=m->left-px;out[i].top=m->top-py;
+        out[i].right=m->right-px-1;out[i].bottom=m->bottom-py-1;out[i].flags=m->primary?1:0;
+    }
+}
 
 typedef struct {
     rdpShadowSubsystem base;
@@ -32,7 +77,10 @@ typedef struct {
     BYTE* pixels;
     int width, height, sourceWidth, sourceHeight;
     double frameInterval;
-    SurfaceDxgi* dxgi;
+    SurfaceDxgi* dxgi[16];
+    BYTE* monitorPixels[16];
+    MonitorInventory inventory;
+    WhdMonitorLayout layout;
     BOOL haveFrame, strictDxgi;
 } SurfaceSubsystem;
 
@@ -131,6 +179,7 @@ static BOOL mouse(rdpShadowSubsystem* base,rdpShadowClient* c,UINT16 flags,UINT1
     } else {
         e.u.mi.dx=MulDiv(x,65535,s->width-1); e.u.mi.dy=MulDiv(y,65535,s->height-1);
         e.u.mi.dwFlags=MOUSEEVENTF_ABSOLUTE|MOUSEEVENTF_MOVE;
+        if(base->surfaceAllMonitors)e.u.mi.dwFlags|=MOUSEEVENTF_VIRTUALDESK;
         if (flags&PTR_FLAGS_BUTTON1) e.u.mi.dwFlags|=(flags&PTR_FLAGS_DOWN)?MOUSEEVENTF_LEFTDOWN:MOUSEEVENTF_LEFTUP;
         if (flags&PTR_FLAGS_BUTTON2) e.u.mi.dwFlags|=(flags&PTR_FLAGS_DOWN)?MOUSEEVENTF_RIGHTDOWN:MOUSEEVENTF_RIGHTUP;
         if (flags&PTR_FLAGS_BUTTON3) e.u.mi.dwFlags|=(flags&PTR_FLAGS_DOWN)?MOUSEEVENTF_MIDDLEDOWN:MOUSEEVENTF_MIDDLEUP;
@@ -138,33 +187,34 @@ static BOOL mouse(rdpShadowSubsystem* base,rdpShadowClient* c,UINT16 flags,UINT1
     return record_input(c,SendInput(1,&e,sizeof(e))==1);
 }
 static UINT32 monitors(MONITOR_DEF* m,UINT32 count) {
-    if (!count) return 0;
-    int w=GetSystemMetrics(SM_CXSCREEN),h=GetSystemMetrics(SM_CYSCREEN);
-    const char* setting=getenv("SURFACE_DESK_MAX_EDGE");
-    int edge=setting?atoi(setting):1920;
-    int longest=w>h?w:h;
-    if(edge>=640 && edge<longest) {
-        w=(int)((int64_t)w*edge/longest)&~3;
-        h=(int)((int64_t)h*edge/longest)&~3;
-    }
-    m[0].left=m[0].top=0; m[0].right=w-1;
-    m[0].bottom=h-1; m[0].flags=1; return 1;
+    MonitorInventory list;WhdMonitorLayout l;
+    if(!read_monitors(all_monitors(),&list,&l) || count<l.count)return 0;
+    fprintf(stderr,"SurfaceDesk MONITOR_LIST count=%u width=%d height=%d\n",l.count,l.width,l.height);
+    monitor_defs(&l,m);return l.count;
+}
+static void free_dxgi(SurfaceSubsystem* s) {
+    for(unsigned i=0;i<16;i++){surface_dxgi_free(s->dxgi[i]);s->dxgi[i]=NULL;free(s->monitorPixels[i]);s->monitorPixels[i]=NULL;}
 }
 static int capture_frame(SurfaceSubsystem* s) {
-    if(s->dxgi) {
-        HRESULT hr=S_OK;
-        int result=surface_dxgi_capture(s->dxgi,s->pixels,(size_t)s->width*4,&hr);
-        if(result>=0)return result;
+    if(s->dxgi[0]) {
+        HRESULT hr=S_OK;int changed=0;
+        for(unsigned i=0;i<s->layout.count;i++) {
+            const WhdMonitor* m=&s->layout.pixels[i];int w=m->right-m->left,h=m->bottom-m->top;
+            int result=surface_dxgi_capture(s->dxgi[i],s->monitorPixels[i],(size_t)w*4,&hr);
+            if(result<0){changed=-1;break;}
+            if(result>0){changed=1;for(int y=0;y<h;y++)memcpy(s->pixels+((size_t)(m->top+y)*s->width+m->left)*4,s->monitorPixels[i]+(size_t)y*w*4,(size_t)w*4);}
+        }
+        if(changed>=0)return changed;
         fprintf(stderr,"SurfaceDesk DXGI failed: hr=0x%08lx; %s\n",(unsigned long)hr,
                 s->strictDxgi?"strict mode stops":"falling back to GDI");
-        surface_dxgi_free(s->dxgi);s->dxgi=NULL;
+        free_dxgi(s);
         if(s->strictDxgi){SetEvent(s->base.server->StopEvent);return -1;}
         fprintf(stderr,"SurfaceDesk CAPTURE backend=gdi reason=dxgi_runtime_failure\n");fflush(stderr);
     }
     BOOL copied;
     if(s->width==s->sourceWidth && s->height==s->sourceHeight)
-        copied=BitBlt(s->memory,0,0,s->width,s->height,s->screen,0,0,SRCCOPY|CAPTUREBLT);
-    else copied=StretchBlt(s->memory,0,0,s->width,s->height,s->screen,0,0,
+        copied=BitBlt(s->memory,0,0,s->width,s->height,s->screen,s->layout.left,s->layout.top,SRCCOPY|CAPTUREBLT);
+    else copied=StretchBlt(s->memory,0,0,s->width,s->height,s->screen,s->layout.left,s->layout.top,
                           s->sourceWidth,s->sourceHeight,SRCCOPY|CAPTUREBLT);
     GdiFlush();return copied?1:-1;
 }
@@ -175,25 +225,34 @@ static DWORD WINAPI capture(LPVOID arg) {
     s->strictDxgi=mode && strcmp(mode,"dxgi")==0;
     if(!mode || strcmp(mode,"gdi")!=0) {
         HRESULT hr=S_OK;
-        s->dxgi=surface_dxgi_create(s->sourceWidth,s->sourceHeight,s->width,s->height,&hr);
-        if(!s->dxgi) {
+        for(unsigned i=0;i<s->layout.count;i++) {
+            const WhdMonitor* raw=&s->layout.source[i];const WhdMonitor* m=&s->layout.pixels[i];
+            int w=m->right-m->left,h=m->bottom-m->top;
+            s->monitorPixels[i]=calloc((size_t)w*h,4);
+            if(!s->monitorPixels[i]){hr=E_OUTOFMEMORY;break;}
+            s->dxgi[i]=surface_dxgi_create_monitor(s->inventory.handles[i],raw->right-raw->left,raw->bottom-raw->top,w,h,&hr);
+            if(!s->dxgi[i])break;
+        }
+        if(FAILED(hr)) {
+            free_dxgi(s);
             fprintf(stderr,"SurfaceDesk DXGI unavailable: hr=0x%08lx; %s\n",(unsigned long)hr,
                     s->strictDxgi?"strict mode stops":"falling back to GDI");
             if(s->strictDxgi){SetEvent(server->StopEvent);return 0;}
         }
     }
     fprintf(stderr,"SurfaceDesk CAPTURE backend=%s source=%dx%d stream=%dx%d resize=%s\n",
-        s->dxgi?"dxgi":"gdi",s->sourceWidth,s->sourceHeight,s->width,s->height,
+        s->dxgi[0]?"dxgi":"gdi",s->sourceWidth,s->sourceHeight,s->width,s->height,
         (s->width==s->sourceWidth && s->height==s->sourceHeight)?"none":
-        (s->dxgi?"GPU-linear":"GDI-halftone"));fflush(stderr);
+        (s->dxgi[0]?"GPU-linear":"GDI-halftone"));fflush(stderr);
     double delay=0;
     double nextCapture=surface_perf_now();
     double windowStart=surface_perf_now(), captureMs=0, pollMs=0, copyMs=0, waitMs=0, workMax=0;
     UINT64 attempts=0, frames=0, changes=0, late=0, errors=0, idle=0;
     while (surface_pacer_wait(s->captureTimer,server->StopEvent,delay)) {
         delay=(DWORD)(s->frameInterval+0.999);
-        if (!desktop_available() || GetSystemMetrics(SM_CXSCREEN)!=s->sourceWidth ||
-            GetSystemMetrics(SM_CYSCREEN)!=s->sourceHeight) {
+        MonitorInventory current;WhdMonitorLayout currentLayout;
+        if (!desktop_available() || !read_monitors(s->base.surfaceAllMonitors,&current,&currentLayout) ||
+            memcmp(&currentLayout,&s->layout,sizeof(currentLayout))!=0) {
             fprintf(stderr,"SurfaceDesk stopped: desktop locked, secured, or resized.\n");
             SetEvent(server->StopEvent); break;
         }
@@ -224,7 +283,7 @@ capture_report:
                 "work_max_ms=%.3f late=%llu errors=%llu backend=%s idle_polls=%llu poll_ms=%.3f pipeline=latest replaced=%llu\n",
                 seconds,s->base.captureFrameRate,(unsigned long long)frames,frames/seconds,
                 0.0,captureMs/n,copyMs/n,waitMs/(attempts?(double)attempts:1.0),
-                workMax,(unsigned long long)late,(unsigned long long)errors,s->dxgi?"dxgi":"gdi",
+                workMax,(unsigned long long)late,(unsigned long long)errors,s->dxgi[0]?"dxgi":"gdi",
                 (unsigned long long)idle,pollMs/(attempts?(double)attempts:1.0),(unsigned long long)changes);
             fflush(stderr);
             windowStart=measuredAt;captureMs=pollMs=copyMs=waitMs=workMax=0;
@@ -288,14 +347,18 @@ static int init(rdpShadowSubsystem* base) {
     SurfaceSubsystem* s=(SurfaceSubsystem*)base;
     SetProcessDPIAware();
     if (!desktop_available()) return -1;
-    base->numMonitors=monitors(base->monitors,16); base->virtualScreen=base->monitors[0];
+    base->surfaceAllMonitors=all_monitors();
+    if(!read_monitors(base->surfaceAllMonitors,&s->inventory,&s->layout))return -1;
+    base->numMonitors=s->layout.count;monitor_defs(&s->layout,base->monitors);
+    base->virtualScreen=(MONITOR_DEF){.left=0,.top=0,.right=s->layout.width-1,.bottom=s->layout.height-1,.flags=1};
+    for(unsigned i=0;i<s->layout.count;i++)fprintf(stderr,"SurfaceDesk MONITOR index=%u device=DISPLAY%d primary=%d source=%d,%d,%d,%d stream=%d,%d,%d,%d\n",i+1,s->layout.source[i].id,s->layout.source[i].primary,s->layout.source[i].left,s->layout.source[i].top,s->layout.source[i].right,s->layout.source[i].bottom,s->layout.pixels[i].left,s->layout.pixels[i].top,s->layout.pixels[i].right,s->layout.pixels[i].bottom);
     const char* fpsSetting=getenv("SURFACE_DESK_FPS");
     int fps=fpsSetting?atoi(fpsSetting):20;
     if(fps!=20 && fps!=30 && fps!=45)fps=20;
     base->captureFrameRate=(UINT32)fps;s->frameInterval=1000.0/fps;
     surface_audio_formats(base);
-    s->sourceWidth=GetSystemMetrics(SM_CXSCREEN);s->sourceHeight=GetSystemMetrics(SM_CYSCREEN);
-    s->width=base->monitors[0].right+1; s->height=base->monitors[0].bottom+1;
+    s->sourceWidth=s->layout.sourceWidth;s->sourceHeight=s->layout.sourceHeight;
+    s->width=s->layout.width;s->height=s->layout.height;
     if (s->width<2||s->height<2||s->width>8192||s->height>8192) return -1;
     BOOL highResolution=FALSE;s->captureTimer=surface_pacer_new(&highResolution);
     if(!s->captureTimer)return -1;
@@ -308,6 +371,7 @@ static int init(rdpShadowSubsystem* base) {
     bi.bmiHeader.biPlanes=1; bi.bmiHeader.biBitCount=32; bi.bmiHeader.biCompression=BI_RGB;
     s->bitmap=CreateDIBSection(s->screen,&bi,DIB_RGB_COLORS,(void**)&s->pixels,NULL,0);
     if (!s->memory||!s->bitmap||!s->pixels) return -1;
+    memset(s->pixels,0,(size_t)s->width*s->height*4);
     s->previous=SelectObject(s->memory,s->bitmap);
     SetStretchBltMode(s->memory,HALFTONE);SetBrushOrgEx(s->memory,0,0,NULL);
     fprintf(stderr,"SurfaceDesk screen: source=%dx%d stream=%dx%d, target=%d fps, dirty rectangles, app-password authentication\n",
@@ -339,7 +403,7 @@ static int uninit(rdpShadowSubsystem* base) {
     SurfaceSubsystem* s=(SurfaceSubsystem*)base;
     surface_latest_free(s->latest);s->latest=NULL;
     if(s->captureTimer){CloseHandle(s->captureTimer);s->captureTimer=NULL;}
-    surface_dxgi_free(s->dxgi);s->dxgi=NULL;
+    free_dxgi(s);
     if(s->memory&&s->previous) SelectObject(s->memory,s->previous);
     if(s->bitmap) DeleteObject(s->bitmap);
     if(s->memory) DeleteDC(s->memory);

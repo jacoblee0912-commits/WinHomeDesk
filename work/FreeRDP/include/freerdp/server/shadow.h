@@ -267,6 +267,7 @@ extern "C"
 		rdpShadowServer* server;
 
 		WINPR_ATTR_NODISCARD pfnShadowRelMouseEvent RelMouseEvent; /** @since version 3.15.0 */
+		BOOL surfaceAllMonitors; /* WinHomeDesk: framebuffer covers virtualScreen. */
 	};
 
 /* Definition of message between subsystem and clients */

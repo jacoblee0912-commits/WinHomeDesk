@@ -31,6 +31,12 @@
 
 #include <freerdp/log.h>
 #define TAG SERVER_TAG("shadow")
+#ifdef __APPLE__
+#include <signal.h>
+#include <CoreFoundation/CoreFoundation.h>
+static volatile sig_atomic_t mac_stop_requested = 0;
+static void mac_stop_signal(int number) { mac_stop_requested = 1; }
+#endif
 
 WINPR_ATTR_NODISCARD
 static const char* boolstr(BOOL val)
@@ -55,7 +61,9 @@ static void dump_security_settings(const rdpSettings* settings)
 int main(int argc, char** argv)
 {
     setvbuf(stdout,NULL,_IONBF,0);
+#ifdef _WIN32
     SetProcessDPIAware();
+#endif
 	int status = 0;
 	DWORD dwExitCode = 0;
 	COMMAND_LINE_ARGUMENT_A shadow_args[] = {
@@ -232,7 +240,18 @@ int main(int argc, char** argv)
 
     fprintf(stderr,"SurfaceDesk LISTENING port=%lu\n",(unsigned long)server->port);
     fflush(stderr);
+#ifdef __APPLE__
+    signal(SIGTERM, mac_stop_signal);
+    signal(SIGINT, mac_stop_signal);
+    while (WaitForSingleObject(server->thread, 10) == WAIT_TIMEOUT) {
+        if (mac_stop_requested) SetEvent(server->StopEvent);
+        /* Text Input Source Services must run on main; remote keyboard workers
+         * synchronously dispatch language changes here before the next key. */
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.01, true);
+    }
+#else
 	(void)WaitForSingleObject(server->thread, INFINITE);
+#endif
 
 	if (!GetExitCodeThread(server->thread, &dwExitCode))
 		status = -1;

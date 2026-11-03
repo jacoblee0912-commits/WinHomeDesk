@@ -46,7 +46,7 @@ rdpShadowScreen* shadow_screen_new(rdpShadowServer* server)
 
 		{
 			WINPR_ASSERT(subsystem->selectedMonitor < ARRAYSIZE(subsystem->monitors));
-			const MONITOR_DEF* primary = &(subsystem->monitors[subsystem->selectedMonitor]);
+			const MONITOR_DEF* primary = subsystem->surfaceAllMonitors ? &subsystem->virtualScreen : &(subsystem->monitors[subsystem->selectedMonitor]);
 			WINPR_ASSERT(primary);
 
 			const INT64 x = primary->left;
@@ -133,7 +133,7 @@ BOOL shadow_screen_resize(rdpShadowScreen* screen)
 	WINPR_ASSERT(subsystem);
 	WINPR_ASSERT(subsystem->monitors);
 
-	MONITOR_DEF* primary = &(subsystem->monitors[subsystem->selectedMonitor]);
+	MONITOR_DEF* primary = subsystem->surfaceAllMonitors ? &subsystem->virtualScreen : &(subsystem->monitors[subsystem->selectedMonitor]);
 	WINPR_ASSERT(primary);
 
 	const INT32 x = primary->left;

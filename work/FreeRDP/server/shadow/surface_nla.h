@@ -35,7 +35,18 @@ static SECURITY_STATUS surface_nla_callback(void* peer, const SEC_WINNT_AUTH_IDE
   return SEC_E_LOGON_DENIED;
  if (!surface_nla_hash(hash)) return SEC_E_LOGON_DENIED;
  if (id->Flags & SEC_WINNT_AUTH_IDENTITY_UNICODE) {
+#ifdef _WIN32
   if (_wcsnicmp((LPCWSTR)id->User,L"surface",7) == 0)
+#else
+  const WCHAR* name = (LPCWSTR)id->User;
+  BOOL matches = TRUE;
+  for (size_t i = 0; i < 7; i++) {
+   WCHAR ch = name[i];
+   if (ch >= 'A' && ch <= 'Z') ch += 'a' - 'A';
+   if (ch != (WCHAR)"surface"[i]) matches = FALSE;
+  }
+  if (matches)
+#endif
    ok = NTOWFv2FromHashW(hash,(LPCWSTR)id->User,id->UserLength*2,
                         (LPCWSTR)id->Domain,id->DomainLength*2,result);
  } else if (id->Flags & SEC_WINNT_AUTH_IDENTITY_ANSI) {

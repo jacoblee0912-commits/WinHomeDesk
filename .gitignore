@@ -9,6 +9,10 @@
 /work/compiler/
 /work/tooling/
 /work/deps/
+/work/deps-windows/
+/work/downloads/
+/work/build-mac/
+/work/build-windows/
 /work/zig-cache/
 /work/rdc322-bundle/
 /work/test-state/

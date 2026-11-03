@@ -78,6 +78,9 @@ static HRESULT create_scaler(SurfaceDxgi* c) {
 }
 
 SurfaceDxgi* surface_dxgi_create(int sourceWidth,int sourceHeight,int width,int height,HRESULT* error) {
+    return surface_dxgi_create_monitor(MonitorFromPoint((POINT){0,0},MONITOR_DEFAULTTOPRIMARY),sourceWidth,sourceHeight,width,height,error);
+}
+SurfaceDxgi* surface_dxgi_create_monitor(HMONITOR target,int sourceWidth,int sourceHeight,int width,int height,HRESULT* error) {
     IDXGIFactory1* factory=NULL;
     IDXGIAdapter1* adapter=NULL;
     IDXGIOutput* output=NULL;
@@ -88,7 +91,6 @@ SurfaceDxgi* surface_dxgi_create(int sourceWidth,int sourceHeight,int width,int 
     c->sourceWidth=sourceWidth;c->sourceHeight=sourceHeight;c->width=width;c->height=height;
     hr=CreateDXGIFactory1(&IID_IDXGIFactory1,(void**)&factory);
     if(FAILED(hr))goto out;
-    HMONITOR primary=MonitorFromPoint((POINT){0,0},MONITOR_DEFAULTTOPRIMARY);
     BOOL found=FALSE;
     for(UINT ai=0; !found;ai++) {
         hr=IDXGIFactory1_EnumAdapters1(factory,ai,&adapter);
@@ -98,7 +100,7 @@ SurfaceDxgi* surface_dxgi_create(int sourceWidth,int sourceHeight,int width,int 
             if(FAILED(hr))break;
             DXGI_OUTPUT_DESC desc={0};
             hr=IDXGIOutput_GetDesc(output,&desc);
-            if(SUCCEEDED(hr) && desc.AttachedToDesktop && desc.Monitor==primary) {
+            if(SUCCEEDED(hr) && desc.AttachedToDesktop && desc.Monitor==target) {
                 found=TRUE;
                 if(desc.Rotation!=DXGI_MODE_ROTATION_IDENTITY && desc.Rotation!=DXGI_MODE_ROTATION_UNSPECIFIED) {
                     hr=DXGI_ERROR_UNSUPPORTED;goto out;

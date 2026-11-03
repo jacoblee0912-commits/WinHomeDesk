@@ -19,6 +19,7 @@
  */
 
 #include <freerdp/config.h>
+#include <winpr/sysinfo.h>
 
 #include <winpr/crt.h>
 #include <winpr/print.h>
@@ -33,10 +34,13 @@
 #include <freerdp/codec/region.h>
 
 #include "h264.h"
-#include <winpr/sysinfo.h>
 static double surface_codec_clock(void) {
+#ifdef _WIN32
     LARGE_INTEGER n,f;QueryPerformanceCounter(&n);QueryPerformanceFrequency(&f);
     return (double)n.QuadPart*1000.0/f.QuadPart;
+#else
+    return (double)GetTickCount64();
+#endif
 }
 
 #define TAG FREERDP_TAG("codec")
@@ -416,6 +420,14 @@ INT32 avc420_compress(H264_CONTEXT* h264, const BYTE* pSrcData, DWORD SrcFormat,
 
     started=surface_codec_clock();
 	rc = h264->subsystem->Compress(h264, pcYUVData, h264->iStride, ppDstData, pDstSize);
+    if (rc > 0 && h264->surfaceFullFrame)
+    {
+        /* Source dirty tiles decide whether encoding is needed. They do not
+         * describe the reconstructed changes of a general video encoder.
+         * Publish its full visible frame, including periodic IDR refreshes. */
+        meta->regionRects[0] = *regionRect;
+        meta->numRegionRects = 1;
+    }
     codecMs=surface_codec_clock()-started;
 	if (rc >= 0)
 		h264->firstLumaFrameDone = TRUE;

@@ -2775,6 +2775,23 @@ static int shadow_client_subsystem_process_message(rdpShadowClient* client, wMes
 }
 
 WINPR_ATTR_NODISCARD
+static BOOL surface_adjust_monitors(freerdp_peer* peer)
+{
+    rdpShadowClient* client=(rdpShadowClient*)peer->context;
+    rdpShadowSubsystem* subsystem=client->subsystem;
+    if(!subsystem->surfaceAllMonitors)return TRUE;
+    rdpSettings* settings=peer->context->settings;
+    if(!subsystem->numMonitors || subsystem->numMonitors>16)return FALSE;
+    for(UINT32 i=0;i<subsystem->numMonitors;i++) {
+        const MONITOR_DEF* m=&subsystem->monitors[i];
+        rdpMonitor monitor={0};monitor.x=m->left;monitor.y=m->top;
+        monitor.width=m->right-m->left+1;monitor.height=m->bottom-m->top+1;
+        monitor.is_primary=(m->flags&1)!=0;monitor.orig_screen=i;
+        if(!freerdp_settings_set_pointer_array(settings,FreeRDP_MonitorDefArray,i,&monitor))return FALSE;
+    }
+    return freerdp_settings_set_uint32(settings,FreeRDP_MonitorCount,subsystem->numMonitors);
+}
+
 static DWORD WINAPI shadow_client_thread(LPVOID arg)
 {
 	rdpShadowClient* client = (rdpShadowClient*)arg;
@@ -2814,6 +2831,7 @@ static DWORD WINAPI shadow_client_thread(LPVOID arg)
 	WINPR_ASSERT(settings);
 
 	peer->Capabilities = shadow_client_capabilities;
+	peer->AdjustMonitorsLayout = surface_adjust_monitors;
 	peer->PostConnect = shadow_client_post_connect;
 	peer->Activate = shadow_client_activate;
 	peer->Logon = shadow_client_logon;

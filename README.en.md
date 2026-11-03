@@ -1,5 +1,7 @@
 # WinHomeDesk
 
+Development source **0.7.0-local** adds a macOS 27 / Apple Silicon server and client, system audio and video options, Windows server multi-monitor capture, and separate monitor windows on Mac. See [build and usage](macos/README.md), [validation status](macos/VALIDATION.md), and the [Windows continuation guide](docs/WINDOWS_MULTIMONITOR_DEVELOPMENT.md). The Windows GUI remains at 0.3.0; its monitor selector and native monitor windows are follow-up work. No binary release accompanies this source snapshot.
+
 [한국어](README.md) | **English**
 
 WinHomeDesk is an experimental, standalone FreeRDP-based server for sharing the currently signed-in Windows desktop. It targets **Windows 11 Home x64**, including Surface Pro 8 and x64 Surface Pro 9 devices. The current release is **0.3.0**.

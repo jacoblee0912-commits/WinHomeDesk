@@ -3,7 +3,13 @@
  * Client-reported hold time is not a physical speaker/ear latency measurement. */
 #ifndef SURFACE_AUDIO_TIMING_H
 #define SURFACE_AUDIO_TIMING_H
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include <winpr/synch.h>
+#include <winpr/sysinfo.h>
+#include <winpr/interlocked.h>
+#endif
 #include <stdlib.h>
 typedef struct {BOOL valid,confirmed;UINT16 stamp;UINT64 sent;double age;UINT32 hold,ack;} SurfaceAudioBlock;
 typedef struct {CRITICAL_SECTION lock;SurfaceAudioBlock slots[256];} SurfaceAudioTiming;

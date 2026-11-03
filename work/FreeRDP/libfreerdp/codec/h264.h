@@ -89,6 +89,7 @@ extern "C"
 		UINT32 YUVWidth;
 		UINT32 YUVHeight;
         BOOL surfaceAvc444;
+        BOOL surfaceFullFrame;
         double surfaceReportAt,surfaceConvertMs,surfaceDiffMs,surfaceCodecMs;
         UINT64 surfaceCalls,surfaceEncoded;
 	};
